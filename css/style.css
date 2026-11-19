@@ -3834,3 +3834,33 @@ body.ipe .ranks span { font: 700 15px/1.25 var(--sans); }
   body.ipe .esc-stage { margin-left: -12px; margin-right: -12px; border-left: 0; border-right: 0; }
   .esc-locks { font-size: 22px; gap: 4px; }
 }
+
+/* ---- escape room: que quepa en pantalla y fuego que se propaga ---- */
+.esc-play { display: grid; gap: 14px; align-items: start; }
+.esc-play .esc-stage { margin-bottom: 0; }
+.esc-svg { max-height: 58vh; margin: 0 auto; }
+@media (min-width: 1000px) {
+  .esc-play { grid-template-columns: minmax(0, 1.55fr) minmax(280px, 1fr); }
+  .esc-svg { max-height: calc(100vh - 290px); min-height: 220px; }
+  .esc-play #escPanel .esc-room, .esc-play #escPanel .finish { margin: 0; }
+  .esc-play #escPanel .esc-room { padding: 14px 16px; }
+  .esc-play #escPanel .esc-room h3 { font-size: 21px; }
+  .esc-play #escPanel .esc-room p { font-size: 15px; line-height: 1.45; margin: 6px 0 10px; }
+  .esc-play #escPanel .finish { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .esc-play #escPanel .finish .big { font-size: 40px; }
+  .esc-play #escPanel .esc-intro .lead { font-size: 16px; margin-top: 0; }
+}
+.esc-top { margin-bottom: 8px; }
+.esc-clock { padding: 4px 12px; }
+.esc-clock span { font-size: 30px; }
+.game-sheet:has(.esc-play) .sheet-main { padding-top: 12px; padding-bottom: 14px; }
+.esc-svg .e-spot { opacity: 0; }
+.esc-svg .e-spot-in { transform: scale(.1); transform-box: fill-box; transform-origin: 50% 100%; transition: transform .9s cubic-bezier(.3, 1.6, .5, 1); }
+.esc-svg .e-spot.on { opacity: 1; }
+.esc-svg .e-spot.on .e-spot-in { transform: scale(1); }
+.esc-svg .e-heat { fill: #ff6a1f; opacity: var(--heat, 0); pointer-events: none; mix-blend-mode: multiply; transition: opacity .5s linear; animation: escHeat 1.4s ease-in-out infinite alternate; }
+@keyframes escHeat { to { fill: #ff3b1a; } }
+.esc-svg.door-open .e-spot { opacity: 0; transition: opacity 1s; }
+@media (max-width: 900px) { .esc-svg { max-height: none; } }
+.esc-room .fb { background: #2e2a18; color: #ffe7a0; border-left-color: #ffcd38; }
+.esc-room .fb.bad { background: #4a120c; color: #ffc2b8; border-left-color: #ff3b2a; }

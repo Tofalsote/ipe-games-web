@@ -25,7 +25,7 @@ y un **minitest**, y un **juego** distinto:
 | 7 · Salario, nómina y Seguridad Social | 💶 **Tu nómina**: rellena bases, cotizaciones, IRPF y líquido |
 | 8 · Cambios y fin del contrato | 🧮 **Fin de contrato**: indemnización y finiquito |
 | 9 · Mi proyecto profesional | 🗺️ **Mi DAFO y hoja de ruta**: DAFO personal, objetivos SMART y descarga de la hoja de ruta |
-| Final | 🔐 **Escape room: el CPD cerrado**: cuenta atrás de 6 minutos con la sala animada (fuego en el SAI, humo, baliza, sirenas) |
+| Final | 🔐 **Escape room: el CPD cerrado**: cuenta atrás de 2:30 con la sala animada (el fuego se propaga, humo, baliza, sirenas) |
 
 Más: puntos, 8 rangos, 16 logros con forma de acreditación (Recurso preventivo, Delegado de prevención…), botón ↻ Reiniciar en cada juego, glosario, tema claro y oscuro, y Previ, la mascota con casco.
 
