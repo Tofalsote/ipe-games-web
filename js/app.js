@@ -23,15 +23,16 @@
     },
   };
 
+  /* rangos: tu trayectoria laboral, del paro a montar tu propia empresa; cada uno con su base legal */
   const RANKS = [
-    [0, 'Becario'],
-    [120, 'Técnico junior'],
-    [300, 'Técnico de soporte'],
-    [550, 'Técnico de sistemas'],
-    [850, 'Delegado de prevención'],
-    [1200, 'Administrador de redes'],
-    [1600, 'Responsable de IT'],
-    [2100, 'Jefe de infraestructura'],
+    [0, 'Demandante de empleo', '📄', 'SEPE', 'Inscrito en el SEPE, con el CV recién hecho y muchas ganas.'],
+    [120, 'Alumno en prácticas', '🏫', 'FP en empresa', 'Tu primera empresa: aprendes con un tutor y sin firmar contrato de trabajo.'],
+    [300, 'Técnico en periodo de prueba', '⏳', 'Art. 14 ET', 'Ya tienes contrato, pero cualquiera de las partes puede terminarlo sin indemnización mientras dura la prueba.'],
+    [550, 'Técnico con contrato indefinido', '✍️', 'Art. 15 ET', 'Superada la prueba: el indefinido es la regla general desde la reforma de 2021.'],
+    [850, 'Delegado de prevención', '🦺', 'Art. 35 LPRL', 'Tus compañeros te eligen para vigilar la seguridad y la salud en el trabajo.'],
+    [1200, 'Miembro del comité de empresa', '🗳️', 'Art. 63 ET', 'Representas a la plantilla y negocias con la empresa, convenio incluido.'],
+    [1600, 'Responsable del equipo IT', '🧑‍💼', 'Poder de dirección', 'Organizas guardias legales, evalúas los riesgos de tu equipo y revisas nóminas.'],
+    [2100, 'Fundador de tu empresa IT', '🚀', 'Autoempleo', 'Ahora quien contrata, da de alta en la Seguridad Social y paga las nóminas eres tú.'],
   ];
   /* logros con forma de acreditaciones del mundo laboral: cada uno lleva el documento o la figura real que imita */
   const BADGES = [
@@ -42,7 +43,7 @@
     { id: 'inspector', icon: '🦺', name: 'Recurso preventivo', ref: 'Art. 32 bis LPRL', how: 'Encuentra todos los peligros de una escena sin fallar la clasificación.' },
     { id: 'matriz', icon: '📋', name: 'Evaluación firmada', ref: 'Método INSST', how: 'Coloca bien todos los riesgos en la matriz.' },
     { id: 'pas', icon: '⛑️', name: 'Equipo de primera intervención', ref: 'Plan de emergencia', how: 'Resuelve una emergencia sin ningún error.' },
-    { id: 'prl', icon: '🏗️', name: 'Delegado de prevención', ref: 'Art. 35 LPRL', how: 'Termina los juegos de prevención: Inspector, Matriz y Emergencia.' },
+    { id: 'prl', icon: '🏗️', name: 'Prevención de nivel básico', ref: 'RD 39/1997', how: 'Termina los juegos de prevención: Inspector, Matriz y Emergencia.' },
     { id: 'contrato', icon: '✍️', name: 'Firma con lupa', ref: 'Art. 15 ET', how: 'Acierta todos los contratos de una partida, trampa incluida.' },
     { id: 'cuadrante', icon: '⏰', name: 'Registro horario impecable', ref: 'Art. 34 ET', how: 'Supera los cuatro niveles del cuadrante.' },
     { id: 'legal', icon: '⚖️', name: 'Inspección de Trabajo', ref: 'ITSS', how: 'Encadena 10 aciertos en ¿Legal o ilegal?' },
@@ -76,7 +77,8 @@
     const i = rankOf(xp);
     const next = RANKS[i + 1];
     $('#hudLevel').textContent = i + 1;
-    $('#hudRank').textContent = RANKS[i][1];
+    $('#hudRank').textContent = RANKS[i][2] + ' ' + RANKS[i][1];
+    $('#hud').title = `${RANKS[i][1]} (${RANKS[i][3]}): ${RANKS[i][4]} Pulsa para ver rangos y logros.`;
     $('#hudXp').textContent = next ? `${xp} / ${next[0]} XP` : `${xp} XP`;
     $('#hudFill').style.width = (next ? ((xp - RANKS[i][0]) / (next[0] - RANKS[i][0])) * 100 : 100) + '%';
     $('#badgeCount').textContent = `${badges.size}/${BADGES.length}`;
@@ -92,7 +94,7 @@
     void hud.offsetWidth;
     hud.classList.add('bump');
     if (rankOf(xp) > before) {
-      toast('⬆️', 'Subes de rango', `Ahora eres ${RANKS[rankOf(xp)][1]}`);
+      toast(RANKS[rankOf(xp)][2], 'Subes de rango', `${RANKS[rankOf(xp)][1]} · ${RANKS[rankOf(xp)][3]}`);
       confetti(70);
     }
   }
@@ -420,7 +422,7 @@
     const i = rankOf(xp);
     $('#trophyBody').innerHTML =
       '<div class="ranks">' +
-      RANKS.map(([min, name], k) => `<div class="${k < i ? 'past' : k === i ? 'now' : ''}"><b>${k + 1}</b><span>${name}</span><small>${min} XP</small></div>`).join('') +
+      RANKS.map(([min, name, icon, ref, desc], k) => `<div class="${k < i ? 'past' : k === i ? 'now' : ''}"><header><b>${k + 1}</b><i aria-hidden="true">${icon}</i><small>${min} XP</small></header><span>${esc(name)}</span><em>${esc(ref)}</em><p>${esc(desc)}</p></div>`).join('') +
       '</div><div class="badge-grid">' +
       BADGES.map((b) => `<article class="cred${badges.has(b.id) ? ' on' : ''}"><header><small>${esc(b.ref)}</small><em>${badges.has(b.id) ? 'Concedido' : 'Pendiente'}</em></header><span>${badges.has(b.id) ? b.icon : '🔒'}</span><b>${esc(b.name)}</b><small>${esc(b.how)}</small></article>`).join('') +
       '</div>';

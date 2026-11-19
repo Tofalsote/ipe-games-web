@@ -3690,3 +3690,19 @@ body.ipe #panel { border: 0; background: none; box-shadow: none; padding: 0 0 24
   body.ipe .insp-art.zoomed svg.art { width: 820px; max-width: none; display: block; }
   body.ipe .insp-side { scroll-margin-top: 10px; }
 }
+
+/* ---- rangos: trayectoria laboral ---- */
+body.ipe #hudRank { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px; display: inline-block; vertical-align: bottom; }
+body.ipe .ranks { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+body.ipe .ranks > div { display: grid; gap: 3px; align-content: start; padding: 10px 12px; text-align: left; }
+.ranks header { display: flex; align-items: center; gap: 8px; }
+.ranks header b { font: italic 700 22px var(--serif); }
+.ranks header i { font-style: normal; font-size: 20px; }
+.ranks header small { margin-left: auto; }
+body.ipe .ranks span { font: 700 15px/1.25 var(--sans); }
+.ranks em { font: 700 10px var(--mono); font-style: normal; text-transform: uppercase; letter-spacing: .06em; color: var(--red); }
+.ranks p { margin: 2px 0 0; font-size: 12.5px; line-height: 1.4; color: var(--muted); }
+.ranks .now p, .ranks .now em { color: #17141f; }
+.ranks > div:not(.past):not(.now) header i { filter: grayscale(1); opacity: .6; }
+@media (max-width: 900px) { body.ipe #hudRank { max-width: 60vw; } body.ipe .ranks { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 440px) { body.ipe .ranks { grid-template-columns: 1fr; } }
