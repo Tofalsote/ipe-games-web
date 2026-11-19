@@ -3951,3 +3951,17 @@ body.ipe .ranks span { font: 700 15px/1.25 var(--sans); }
 .esc-svg.sign-on .e-exitglow { opacity: 1; stroke-width: 6; stroke-opacity: .5; filter: drop-shadow(0 0 8px #7dffb0); animation: escGlow .8s ease-in-out infinite alternate; }
 .esc-stage .esc-locks { font-size: 18px; gap: 2px; }
 @media (max-width: 900px) { .esc-stage .esc-locks { font-size: 12px; } }
+/* escape room: extinción por gas al ganar */
+.esc-svg .e-noz { fill: #8b929b; stroke: #3d434a; stroke-width: 1; }
+.esc-svg .e-gas { pointer-events: none; }
+.esc-svg .e-fog { fill: #eef3f8; opacity: 0; }
+.esc-svg .e-gc { fill: #f4f8fc; opacity: 0; transform-box: fill-box; transform-origin: 50% 0; }
+.esc-svg.gas .e-gc { animation: escGas 2.8s ease-out forwards; }
+.esc-svg.gas .e-fog { animation: escFog 3.4s ease-in-out forwards; }
+@keyframes escGas { 0% { opacity: .95; transform: translateY(0) scale(.25); } 55% { opacity: .8; } 100% { opacity: 0; transform: translateY(190px) scale(3.4); } }
+@keyframes escFog { 0% { opacity: 0; } 35% { opacity: .42; } 100% { opacity: .08; } }
+.esc-svg.gas .e-spot, .esc-svg.gas .e-fire, .esc-svg.gas .e-heat { opacity: 0 !important; transition: opacity 1.4s .9s !important; }
+.esc-svg.gas .e-smoke { opacity: 0 !important; transition: opacity 2.2s 1s !important; }
+.esc-svg.gas .e-puff { animation: none !important; opacity: 0 !important; }
+.esc-svg.gas .e-beam { opacity: 0; animation: none; }
+.esc-svg .e-big { font-size: 56px; }

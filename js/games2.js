@@ -900,6 +900,12 @@
     /* oscuridad al cortar la corriente y humo del techo */
     s += '<rect width="800" height="400" class="e-dark"/>';
     s += '<rect width="800" height="300" fill="url(#escSmoke)" class="e-smoke"/>';
+    /* extinción automática por gas: boquillas en el techo (en un CPD no se apaga con agua) */
+    const NOZ = [170, 340, 520, 690];
+    s += '<g class="e-gas"><rect width="800" height="400" class="e-fog"/>' +
+      NOZ.map((x, n) => [0, 1, 2, 3, 4].map((k) => `<circle cx="${x + (k - 2) * 9}" cy="16" r="${16 + k * 3}" class="e-gc" style="animation-delay:${n * 0.12 + k * 0.18}s"/>`).join('')).join('') +
+      '</g>';
+    s += '<g class="e-nozzles">' + NOZ.map((x) => `<g><rect x="${x - 4}" y="0" width="8" height="10" class="e-noz"/><path d="M${x - 9} 10h18l-4 6h-10Z" class="e-noz"/></g>`).join('') + '</g>';
     /* objetivo actual */
     s += '<circle class="e-target" r="40" cx="0" cy="0"/>';
     /* el personaje (tú) */
@@ -966,6 +972,7 @@
         svg.classList.toggle('door-ok', k >= 7);
         svg.classList.toggle('door-open', k >= 8);
         svg.classList.toggle('lost', state === 'lose');
+        svg.classList.toggle('gas', state === 'win');
         svg.querySelectorAll('.e-pad').forEach((p, i) => p.classList.toggle('open', i < k));
         root.querySelectorAll('#escLocks i').forEach((x, i) => {
           x.textContent = i < k ? '🔓' : '🔒';
@@ -993,7 +1000,7 @@
         svg.style.setProperty('--smokeh', (0.25 + frac * 0.75).toFixed(3));
         svg.style.setProperty('--heat', state === 'intro' ? 0 : (frac * 0.35).toFixed(3));
         svg.style.setProperty('--grow', (0.6 + frac * 1.5).toFixed(3));
-        svg.querySelectorAll('.e-spot').forEach((g, i) => g.classList.toggle('on', state !== 'intro' && state !== 'win' && frac >= ESC_SPREAD[i].at));
+        svg.querySelectorAll('.e-spot').forEach((g, i) => g.classList.toggle('on', state !== 'intro' && frac >= ESC_SPREAD[i].at)); /* al ganar siguen encendidas: las apaga el gas */
         root.querySelector('#escT').textContent = fmt(t);
         const clock = root.querySelector('#escClock');
         clock.classList.toggle('panic', state === 'play' && t <= 30);
@@ -1044,11 +1051,11 @@
         const b = best();
         if (b == null || left > b) api.store.set('best', Math.round(left));
         api.award('escape');
-        api.done(score, '¡Fuera del CPD! Y con todos a salvo en el punto de encuentro.');
+        api.done(score, '¡Has sobrevivido! El sistema de extinción por gas apagó el fuego y todos estáis en el punto de encuentro.');
         setTimeout(() => {
-          if (state === 'win') svg.querySelector('#escBig').textContent = '¡FUERA!';
-        }, 1400);
-        panel.innerHTML = `<div class="finish"><div class="big">🔓</div><div><b>¡Has escapado con ${fmt(left)} de margen!</b><p>Fallos: ${errs} · pistas: ${hints} · nota: ${score} %${b != null ? ` · tu mejor margen: ${fmt(Math.max(b, left))}` : ''}</p><p class="small">La nota depende del tiempo que te sobra: con 1:00 o más, 100 %.</p><button type="button" class="btn primary" data-start>Volver a jugar</button></div></div>`;
+          if (state === 'win') svg.querySelector('#escBig').textContent = '¡HAS SOBREVIVIDO!';
+        }, 1900);
+        panel.innerHTML = `<div class="finish"><div class="big">🔓</div><div><b>¡Has sobrevivido! Saliste con ${fmt(left)} de margen.</b><p>Fallos: ${errs} · pistas: ${hints} · nota: ${score} %${b != null ? ` · tu mejor margen: ${fmt(Math.max(b, left))}` : ''}</p><p class="small">💨 En un CPD el fuego no se apaga con agua, que destrozaría los equipos y conduce la electricidad: un sistema de extinción automática por gas inunda la sala desde el techo. Antes de dispararse suena una alarma, y hay que salir: la sala debe quedar vacía.</p><p class="small">La nota depende del tiempo que te sobra: con 1:00 o más, 100 %.</p><button type="button" class="btn primary" data-start>Volver a jugar</button></div></div>`;
         fit();
       }
       function drawPanel() {
