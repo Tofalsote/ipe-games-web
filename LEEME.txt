@@ -1,0 +1,26 @@
+IPE GAMES
+=========
+
+FOL e Itinerario personal para la empleabilidad para ASIR, jugando:
+prevencion de riesgos, contratos, jornada, nomina, finiquito y tu proyecto profesional.
+
+COMO ABRIRLO
+------------
+1. Descomprime este zip entero en una carpeta
+   (clic derecho > "Extraer todo"; no abras los archivos desde dentro del zip).
+2. Entra en la carpeta ipe_games y haz doble clic en index.html.
+
+QUE NECESITAS
+-------------
+- Un navegador actual: Chrome, Edge, Firefox, Brave o Safari.
+- Nada mas. Funciona sin Internet.
+
+SI ALGO NO VA
+-------------
+- Se ve sin colores: no lo has descomprimido, o has movido index.html fuera de su carpeta.
+- Tu progreso se guarda en tu navegador. Para borrarlo: "Empezar de cero", al final del menu.
+
+AVISO
+-----
+Los datos laborales son los de la normativa estatal del curso 2026-27. Los convenios pueden
+mejorarlos y algunas cifras (tipos de cotizacion, SMI) cambian cada año.

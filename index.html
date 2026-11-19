@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>IPE Games</title>
+  <meta name="description" content="FOL e Itinerario personal para la empleabilidad (IPE) para ASIR, jugando: prevención de riesgos, contratos, jornada, nómina, finiquito y proyecto profesional.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 fill=%27%23ffcd38%27/%3E%3Ctext x=%2732%27 y=%2742%27 font-family=%27Georgia,serif%27 font-style=%27italic%27 font-weight=%27700%27 font-size=%2726%27 text-anchor=%27middle%27 fill=%27%2317141f%27%3EIPE%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="ipe">
+  <header class="top">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">IPE</span>
+      <div>
+        <strong>IPE Games</strong>
+        <small>FOL · empleabilidad · ASIR</small>
+      </div>
+    </div>
+    <button class="hud" id="hud" type="button" title="Ver rangos y logros">
+      <span class="hud-level" id="hudLevel">1</span>
+      <span class="hud-info">
+        <span class="hud-row"><b id="hudRank">Becario</b><small id="hudXp">0 XP</small></span>
+        <span class="bar"><i id="hudFill"></i></span>
+      </span>
+    </button>
+    <button class="btn" id="btnTrophy" type="button">🏆 <span id="badgeCount">0/10</span></button>
+    <button class="btn" id="btnGloss" type="button">Glosario</button>
+    <button class="btn icon" id="btnTheme" type="button" aria-label="Cambiar entre tema claro y oscuro" title="Tema claro / oscuro">🌗</button>
+  </header>
+
+  <main class="layout">
+    <nav id="sidebar" aria-label="Unidades y juegos"></nav>
+    <section id="stage" tabindex="-1">
+      <div class="buddy" id="buddy">
+        <svg viewBox="0 0 64 66" aria-hidden="true">
+          <path d="M10 30c0-13 10-22 22-22s22 9 22 22z" class="hat"/>
+          <rect x="6" y="28" width="52" height="7" rx="3" class="hat-brim"/>
+          <rect x="28" y="6" width="8" height="14" rx="3" class="hat-ridge"/>
+          <ellipse cx="32" cy="46" rx="18" ry="17" class="face"/>
+          <circle cx="25" cy="44" r="5" fill="#fff"/><circle cx="39" cy="44" r="5" fill="#fff"/>
+          <circle cx="26" cy="45" r="2.3" class="eye"/><circle cx="38" cy="45" r="2.3" class="eye"/>
+          <path d="M26 54q6 5 12 0" class="smile"/>
+        </svg>
+        <p class="bubble" id="say" aria-live="polite"></p>
+      </div>
+      <div id="panel"></div>
+    </section>
+  </main>
+
+  <dialog id="gloss" class="dlg">
+    <div class="dlg-head">
+      <strong>Glosario</strong>
+      <input id="glossSearch" type="search" placeholder="Buscar: finiquito, EPI, BCCC…" aria-label="Buscar en el glosario">
+      <button class="btn icon dlg-close" type="button" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="dlg-body" id="glossBody"></div>
+  </dialog>
+
+  <dialog id="trophy" class="dlg">
+    <div class="dlg-head">
+      <strong>Rangos y logros</strong>
+      <span class="grow"></span>
+      <button class="btn icon dlg-close" type="button" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="dlg-body" id="trophyBody"></div>
+  </dialog>
+
+  <div id="toasts" aria-live="polite"></div>
+
+  <script src="js/content.js"></script>
+  <script src="js/games1.js"></script>
+  <script src="js/games2.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
