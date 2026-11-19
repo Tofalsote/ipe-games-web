@@ -903,12 +903,21 @@
     /* oscuridad al cortar la corriente y humo del techo */
     s += '<rect width="800" height="400" class="e-dark"/>';
     s += '<rect width="800" height="300" fill="url(#escSmoke)" class="e-smoke"/>';
-    /* extinción automática por gas: boquillas en el techo (en un CPD no se apaga con agua) */
-    const NOZ = [170, 340, 520, 690];
-    s += '<g class="e-gas"><rect width="800" height="400" class="e-fog"/>' +
-      NOZ.map((x, n) => [0, 1, 2, 3, 4].map((k) => `<circle cx="${x + (k - 2) * 9}" cy="16" r="${16 + k * 3}" class="e-gc" style="animation-delay:${n * 0.12 + k * 0.18}s"/>`).join('')).join('') +
-      '</g>';
-    s += '<g class="e-nozzles">' + NOZ.map((x) => `<g><rect x="${x - 4}" y="0" width="8" height="10" class="e-noz"/><path d="M${x - 9} 10h18l-4 6h-10Z" class="e-noz"/></g>`).join('') + '</g>';
+    /* los bomberos: entran por la puerta con la manguera al final (si sobrevives) */
+    const FF = (cls, lead) =>
+      `<g class="${cls}"><g class="e-ff-in">` +
+      '<path d="M-7 -2l3-28M7 -2l-3-28" class="e-ff-leg"/>' +
+      '<path d="M-11 -62h22l3 34h-28Z" class="e-ff-coat"/><path d="M-12 -40h24M-11 -50h22" class="e-ff-band"/>' +
+      `<path d="M8 -54l${lead ? '18 6' : '16 10'}" class="e-ff-arm"/><path d="M-6 -54l${lead ? '24 4' : '20 12'}" class="e-ff-arm"/>` +
+      '<circle cx="0" cy="-72" r="9" class="e-head"/><path d="M-12 -74h24v-2a12 12 0 0 0-24 0Z" class="e-ff-helmet"/><path d="M-14 -74h28" class="e-ff-brim"/>' +
+      (lead ? '<rect x="18" y="-56" width="14" height="6" rx="2" class="e-ff-noz"/>' : '') +
+      '</g></g>';
+    s += '<path d="M120 324C170 332 220 330 262 306C280 296 300 292 336 278" class="e-hose-line"/>';
+    s += FF('e-ff e-ff2', false) + FF('e-ff e-ff1', true);
+    s += '<g class="e-water">' + [
+      'M352 276Q430 170 520 222', 'M352 278Q420 200 470 286', 'M352 280Q400 240 420 298', 'M352 274Q460 150 560 230',
+    ].map((d, k) => `<path d="${d}" class="e-jet" style="animation-delay:${-k * 0.13}s"/>`).join('') +
+      [0, 1, 2, 3, 4, 5].map((k) => `<circle cx="${500 + (k % 3) * 18}" cy="${226 + (k % 2) * 10}" r="3" class="e-drop" style="animation-delay:${k * 0.15}s"/>`).join('') + '</g>';
     /* objetivo actual */
     s += '<circle class="e-target" r="40" cx="0" cy="0"/>';
     /* el personaje (tú) */
@@ -975,7 +984,7 @@
         svg.classList.toggle('door-ok', k >= 7);
         svg.classList.toggle('door-open', k >= 8);
         svg.classList.toggle('lost', state === 'lose');
-        svg.classList.toggle('gas', state === 'win');
+        svg.classList.toggle('rescue', state === 'win');
         svg.querySelectorAll('.e-pad').forEach((p, i) => p.classList.toggle('open', i < k));
         root.querySelectorAll('#escLocks i').forEach((x, i) => {
           x.textContent = i < k ? '🔓' : '🔒';
@@ -1054,11 +1063,11 @@
         const b = best();
         if (b == null || left > b) api.store.set('best', Math.round(left));
         api.award('escape');
-        api.done(score, '¡Has sobrevivido! El sistema de extinción por gas apagó el fuego y todos estáis en el punto de encuentro.');
+        api.done(score, '¡Has sobrevivido! Los bomberos ya están dentro apagando el fuego y vosotros, a salvo en el punto de encuentro.');
         setTimeout(() => {
           if (state === 'win') svg.querySelector('#escBig').textContent = '¡HAS SOBREVIVIDO!';
-        }, 1900);
-        panel.innerHTML = `<div class="finish"><div class="big">🔓</div><div><b>¡Has sobrevivido! Saliste con ${fmt(left)} de margen.</b><p>Fallos: ${errs} · pistas: ${hints} · nota: ${score} %${b != null ? ` · tu mejor margen: ${fmt(Math.max(b, left))}` : ''}</p><p class="small">💨 En un CPD el fuego no se apaga con agua, que destrozaría los equipos y conduce la electricidad: un sistema de extinción automática por gas inunda la sala desde el techo. Antes de dispararse suena una alarma, y hay que salir: la sala debe quedar vacía.</p><p class="small">La nota depende del tiempo que te sobra: con 1:00 o más, 100 %.</p><button type="button" class="btn primary" data-start>Volver a jugar</button></div></div>`;
+        }, 4600);
+        panel.innerHTML = `<div class="finish"><div class="big">🔓</div><div><b>¡Has sobrevivido! Saliste con ${fmt(left)} de margen.</b><p>Fallos: ${errs} · pistas: ${hints} · nota: ${score} %${b != null ? ` · tu mejor margen: ${fmt(Math.max(b, left))}` : ''}</p><p class="small">🚒 Hiciste lo correcto: tú no tienes que apagar un incendio grande. Avisaste al 112, cortaste la corriente y saliste; por eso los bomberos pudieron entrar sin riesgo de electrocución y apagarlo.</p><p class="small">La nota depende del tiempo que te sobra: con 1:00 o más, 100 %.</p><button type="button" class="btn primary" data-start>Volver a jugar</button></div></div>`;
         fit();
       }
       function drawPanel() {

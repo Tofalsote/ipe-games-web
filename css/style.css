@@ -3978,3 +3978,36 @@ body.ipe .ranks span { font: 700 15px/1.25 var(--sans); }
 /* el extintor usado se queda en el suelo, junto al SAI; solo se va la nube */
 .esc-svg.fire-out .e-co2 { animation: none; opacity: 1; }
 .esc-svg .e-co2 .e-ext.held { stroke: #6d130a; }
+/* escape room: los bomberos entran con la manguera al ganar */
+.esc-svg .e-ff { opacity: 0; }
+.esc-svg .e-ff1 { transform: translate(96px, 330px); }
+.esc-svg .e-ff2 { transform: translate(96px, 330px); }
+.esc-svg.rescue .e-ff { opacity: 1; transition: opacity .3s 1.2s, transform 1.7s cubic-bezier(.4, 0, .3, 1) 1.2s; }
+.esc-svg.rescue .e-ff1 { transform: translate(320px, 330px); }
+.esc-svg.rescue .e-ff2 { transform: translate(250px, 330px); transition-delay: 1.2s, 1.6s; }
+.esc-svg.rescue .e-ff-in { animation: escWalk .35s ease-in-out 1.2s 5; transform-box: fill-box; transform-origin: 50% 100%; }
+@keyframes escWalk { 50% { transform: translateY(-3px) rotate(2deg); } }
+.esc-svg .e-ff-leg { stroke: #1f2933; stroke-width: 6; stroke-linecap: round; }
+.esc-svg .e-ff-coat { fill: #2b3640; stroke: #0f141a; stroke-width: 1.5; }
+.esc-svg .e-ff-band { stroke: #e4ff3a; stroke-width: 3; }
+.esc-svg .e-ff-arm { stroke: #2b3640; stroke-width: 6; stroke-linecap: round; }
+.esc-svg .e-ff-helmet { fill: #d0251b; stroke: #6d130a; stroke-width: 1; }
+.esc-svg .e-ff-brim { stroke: #6d130a; stroke-width: 3; stroke-linecap: round; }
+.esc-svg .e-ff-noz { fill: #8b929b; stroke: #3d434a; }
+.esc-svg .e-hose-line { fill: none; stroke: #c9a227; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 340; stroke-dashoffset: 340; opacity: 0; }
+.esc-svg.rescue .e-hose-line { opacity: 1; stroke-dashoffset: 0; transition: opacity .2s 1.2s, stroke-dashoffset 1.8s linear 1.2s; }
+.esc-svg .e-water { opacity: 0; }
+.esc-svg.rescue .e-water { opacity: 1; transition: opacity .3s 2.9s; }
+.esc-svg .e-jet { fill: none; stroke: #9fd3ff; stroke-width: 4; stroke-linecap: round; stroke-dasharray: 14 10; opacity: .9; }
+.esc-svg.rescue .e-jet { animation: escJet .45s linear infinite; }
+@keyframes escJet { to { stroke-dashoffset: -24; } }
+.esc-svg .e-drop { fill: #cfe9ff; opacity: 0; }
+.esc-svg.rescue .e-drop { animation: escDrop .9s ease-out 3s infinite; }
+@keyframes escDrop { 0% { opacity: .9; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(10px, 30px); } }
+.esc-svg.rescue .e-spot, .esc-svg.rescue .e-fire, .esc-svg.rescue .e-heat { opacity: 0 !important; transition: opacity 1.6s 3.2s !important; }
+.esc-svg.rescue .e-smoke { opacity: 0 !important; transition: opacity 2.4s 3.4s !important; }
+.esc-svg.rescue .e-puff { animation: none !important; opacity: 0 !important; transition: opacity 1s 3s; }
+.esc-svg.rescue .e-beam { opacity: 0; animation: none; }
+.esc-svg.door-open .e-spot { transition: none; }
+.esc-svg.rescue .e-water { animation: escWaterOff .8s ease-out 6.2s forwards; }
+@keyframes escWaterOff { to { opacity: 0; } }
