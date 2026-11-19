@@ -24,16 +24,21 @@
   };
 
   /* rangos: tu trayectoria laboral, del paro a montar tu propia empresa; cada uno con su base legal */
+  /* rangos: tu trayectoria laboral, del paro a montar tu propia empresa; cada uno con su base legal.
+     XP máximo: 9 minitest × 40 + 11 juegos × 70 + 16 logros × 25 (+ 100 del logro oculto) = 1630.
+     Umbrales afinados simulando una partida «buena» (2/3 en los minitest, 80 % en los juegos): cada rango
+     llega al terminar su unidad y el último al acabarlo todo. La perfección se premia con el logro oculto. */
   const RANKS = [
-    [0, 'Demandante de empleo', '📄', 'SEPE', 'Inscrito en el SEPE, con el CV recién hecho y muchas ganas.'],
-    [120, 'Alumno en prácticas', '🏫', 'FP en empresa', 'Tu primera empresa: aprendes con un tutor y sin firmar contrato de trabajo.'],
-    [300, 'Técnico en periodo de prueba', '⏳', 'Art. 14 ET', 'Ya tienes contrato, pero cualquiera de las partes puede terminarlo sin indemnización mientras dura la prueba.'],
-    [550, 'Técnico con contrato indefinido', '✍️', 'Art. 15 ET', 'Superada la prueba: el indefinido es la regla general desde la reforma de 2021.'],
-    [850, 'Delegado de prevención', '🦺', 'Art. 35 LPRL', 'Tus compañeros te eligen para vigilar la seguridad y la salud en el trabajo.'],
-    [1200, 'Miembro del comité de empresa', '🗳️', 'Art. 63 ET', 'Representas a la plantilla y negocias con la empresa, convenio incluido.'],
-    [1600, 'Responsable del equipo IT', '🧑‍💼', 'Poder de dirección', 'Organizas guardias legales, evalúas los riesgos de tu equipo y revisas nóminas.'],
-    [2100, 'Fundador de tu empresa IT', '🚀', 'Autoempleo', 'Ahora quien contrata, da de alta en la Seguridad Social y paga las nóminas eres tú.'],
+    [0, 'Demandante de empleo', '📄', 'SEPE', 'Inscrito en el SEPE, con el CV recién hecho y muchas ganas.', 'Al empezar'],
+    [130, 'Alumno en prácticas', '🏫', 'FP en empresa', 'Tu primera empresa: aprendes con un tutor y sin firmar contrato de trabajo.', 'Al terminar la unidad 1: ya sabes qué perfil IT buscas'],
+    [240, 'Técnico en periodo de prueba', '⏳', 'Art. 14 ET', 'Ya tienes contrato, pero cualquiera de las partes puede terminarlo sin indemnización mientras dura la prueba.', 'Al terminar la unidad 2: sabes detectar los peligros'],
+    [350, 'Técnico con contrato indefinido', '✍️', 'Art. 15 ET', 'Superada la prueba: el indefinido es la regla general desde la reforma de 2021.', 'Al terminar la unidad 3: sabes evaluar los riesgos'],
+    [490, 'Delegado de prevención', '🦺', 'Art. 35 LPRL', 'Tus compañeros te eligen para vigilar la seguridad y la salud en el trabajo.', 'Al cerrar el bloque de prevención (unidades 2 a 4)'],
+    [740, 'Miembro del comité de empresa', '🗳️', 'Art. 63 ET', 'Representas a la plantilla y negocias con la empresa, convenio incluido.', 'Al dominar contratos y jornada (unidades 5 y 6)'],
+    [1000, 'Responsable del equipo IT', '🧑‍💼', 'Poder de dirección', 'Organizas guardias legales, evalúas los riesgos de tu equipo y revisas nóminas.', 'Al dominar nómina, despido y finiquito (unidades 7 y 8)'],
+    [1220, 'Fundador de tu empresa IT', '🚀', 'Autoempleo', 'Ahora quien contrata, da de alta en la Seguridad Social y paga las nóminas eres tú.', 'Al completarlo todo: tu proyecto profesional y el escape room final'],
   ];
+  const XP_MAX = 1630;
   /* logros con forma de acreditaciones del mundo laboral: cada uno lleva el documento o la figura real que imita */
   const BADGES = [
     { id: 'ficha', icon: '🪪', name: 'Alta en la Seguridad Social', ref: 'Primer día', how: 'Completa el minitest de una ficha.' },
@@ -53,6 +58,9 @@
     { id: 'dafo', icon: '🗺️', name: 'Plan de carrera', ref: 'Objetivos SMART', how: 'Completa tu DAFO y tus objetivos SMART.' },
     { id: 'escape', icon: '🚪', name: 'Evacuación completada', ref: 'Punto de encuentro', how: 'Escapa del CPD cerrado.' },
   ];
+
+  /* logro oculto: no sale en la lista ni en el contador hasta que se consigue */
+  const SECRET = { id: 'jubilacion', icon: '🏖️', name: 'Jubilación con la pensión máxima', ref: 'LGSS · Logro oculto', how: 'Lo has completado absolutamente todo: todas las fichas, todos los juegos y todos los logros. Has cotizado todos los años: te jubilas con el 100 % de la base reguladora.' };
 
   let xp = store.get('xp', 0);
   let badges = new Set(store.get('badges', []));
@@ -81,7 +89,7 @@
     $('#hud').title = `${RANKS[i][1]} (${RANKS[i][3]}): ${RANKS[i][4]} Pulsa para ver rangos y logros.`;
     $('#hudXp').textContent = next ? `${xp} / ${next[0]} XP` : `${xp} XP`;
     $('#hudFill').style.width = (next ? ((xp - RANKS[i][0]) / (next[0] - RANKS[i][0])) * 100 : 100) + '%';
-    $('#badgeCount').textContent = `${badges.size}/${BADGES.length}`;
+    $('#badgeCount').textContent = badges.has(SECRET.id) ? `${BADGES.length}/${BADGES.length} + ${SECRET.icon}` : `${BADGES.filter((b) => badges.has(b.id)).length}/${BADGES.length}`;
   }
   function addXp(n) {
     if (!n) return;
@@ -106,6 +114,23 @@
     store.set('badges', [...badges]);
     toast(b.icon, 'Logro desbloqueado', b.name);
     addXp(25);
+    checkSecret();
+  }
+  function checkSecret() {
+    if (badges.has(SECRET.id)) return;
+    const all =
+      BADGES.every((x) => badges.has(x.id)) &&
+      UNITS.every((u) => done.fichas[u.id] != null && u.games.every((g) => done.games[g] != null)) &&
+      done.games[FINAL.id] != null;
+    if (!all) return;
+    badges.add(SECRET.id);
+    store.set('badges', [...badges]);
+    setTimeout(() => {
+      toast(SECRET.icon, '¡Logro oculto desbloqueado!', SECRET.name);
+      confetti(160);
+      say('¡Lo has completado TODO! Hay un logro oculto esperándote en 🏆. Te has ganado la jubilación.', 'happy');
+      addXp(100);
+    }, 900);
   }
   function toast(icon, title, text) {
     const t = document.createElement('div');
@@ -145,6 +170,7 @@
     if (score >= 100) confetti(90);
     if (['inspector', 'matriz', 'emergencia'].every((g) => done.games[g] != null)) award('prl');
     if (['contrato', 'cuadrante', 'legal', 'nomina', 'fin'].every((g) => done.games[g] != null)) award('laboral');
+    checkSecret();
     renderSidebar();
     if (msg) say(msg, score >= 60 ? 'happy' : 'oops');
   }
@@ -312,6 +338,7 @@
       if (UNITS.every((x) => done.fichas[x.id] != null)) award('fichas');
       if (UNITS.every((x) => done.fichas[x.id] === 3)) award('pleno');
       if (right === 3) confetti(50);
+      checkSecret();
       renderSidebar();
       say(right === 3 ? '¡Tres de tres! A por el juego.' : right === 2 ? 'Bien. Si quieres, repite para el pleno.' : 'Repasa la ficha: la tienes justo encima.', right >= 2 ? 'happy' : 'oops');
     }
@@ -421,9 +448,11 @@
   function openTrophies() {
     const i = rankOf(xp);
     $('#trophyBody').innerHTML =
+      `<p class="xp-note">Llevas <b>${xp} XP</b> de ${XP_MAX} posibles. Se gana XP con los minitest (hasta 40 cada uno), los juegos (hasta 70) y los logros (25). Repetir solo suma si mejoras tu nota.</p>` +
       '<div class="ranks">' +
-      RANKS.map(([min, name, icon, ref, desc], k) => `<div class="${k < i ? 'past' : k === i ? 'now' : ''}"><header><b>${k + 1}</b><i aria-hidden="true">${icon}</i><small>${min} XP</small></header><span>${esc(name)}</span><em>${esc(ref)}</em><p>${esc(desc)}</p></div>`).join('') +
+      RANKS.map(([min, name, icon, ref, desc, hito], k) => `<div class="${k < i ? 'past' : k === i ? 'now' : ''}"><header><b>${k + 1}</b><i aria-hidden="true">${icon}</i><small>${min} XP</small></header><span>${esc(name)}</span><em>${esc(ref)}</em><p>${esc(desc)}</p><p class="hito">🎯 ${esc(hito)}</p></div>`).join('') +
       '</div><div class="badge-grid">' +
+      (badges.has(SECRET.id) ? `<article class="cred on secret"><header><small>${esc(SECRET.ref)}</small><em>Desbloqueado</em></header><span>${SECRET.icon}</span><b>${esc(SECRET.name)}</b><small>${esc(SECRET.how)}</small></article>` : '') +
       BADGES.map((b) => `<article class="cred${badges.has(b.id) ? ' on' : ''}"><header><small>${esc(b.ref)}</small><em>${badges.has(b.id) ? 'Concedido' : 'Pendiente'}</em></header><span>${badges.has(b.id) ? b.icon : '🔒'}</span><b>${esc(b.name)}</b><small>${esc(b.how)}</small></article>`).join('') +
       '</div>';
     trophy.showModal();
@@ -448,5 +477,5 @@
   renderHud();
   const fromHash = (location.hash || '').replace(/^#\/?/, '');
   go(fromHash || store.get('route', 'home'));
-  window.__ipe = { go, get route() { return route; }, done, award };
+  window.__ipe = { go, get route() { return route; }, done, award, finish: gameDone, get xp() { return xp; } };
 })();

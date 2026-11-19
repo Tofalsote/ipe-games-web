@@ -3706,3 +3706,13 @@ body.ipe .ranks span { font: 700 15px/1.25 var(--sans); }
 .ranks > div:not(.past):not(.now) header i { filter: grayscale(1); opacity: .6; }
 @media (max-width: 900px) { body.ipe #hudRank { max-width: 60vw; } body.ipe .ranks { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 440px) { body.ipe .ranks { grid-template-columns: 1fr; } }
+.ranks p.hito { margin-top: 4px; padding-top: 5px; border-top: 1.5px dashed color-mix(in srgb, currentColor 30%, transparent); font: 600 11.5px/1.35 var(--sans); color: var(--ink); }
+.ranks .now p.hito { color: #17141f; }
+.xp-note { margin: 0 0 12px; font-size: 14px; }
+.badge-grid article.cred.secret { grid-column: 1 / -1; background: linear-gradient(135deg, #ffe27a, #ffcd38 45%, #ff9d6b); color: #17141f; }
+.cred.secret header { background: #17141f; color: #ffcd38; }
+.cred.secret header small, .cred.secret header em { color: #ffcd38; }
+.cred.secret > small { color: #17141f; }
+.cred.secret span { font-size: 40px; }
+.cred.secret b { font-size: 22px; }
+.cred.secret::after { content: '100 %'; }
