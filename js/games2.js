@@ -251,7 +251,7 @@
           `<p class="lead">${esc(L.intro)}</p>${L.note ? `<p class="note">${esc(L.note)}</p>` : ''}` +
           '<p class="small">Escribe los tramos de cada día: <code>9-17</code>, <code>7-15</code>, o jornada partida <code>9-14 16-19</code>. Vacío = libre. Se comprueba mientras escribes.</p>' +
           `<div class="tbl-wrap"><table class="cq"><thead><tr><th></th>${DIAS_L.map((d, i) => `<th>${d}${L.need[i] ? `<small>cubrir ${L.need[i][0]}–${L.need[i][1]}</small>` : ''}</th>`).join('')}<th>Total</th><th>Pausa</th></tr></thead><tbody>` +
-          L.who.map((w) => `<tr><th>${w}</th>${state.cells[w].map((c, i) => `<td><input type="text" value="${esc(c)}" data-w="${w}" data-d="${i}" aria-label="${w}, ${DIAS_L[i]}" spellcheck="false" autocomplete="off"></td>`).join('')}<td class="tot" data-tot="${w}"></td><td><label class="chk"><input type="checkbox" data-p="${w}"${state.pausa[w] ? ' checked' : ''}> 15 min</label></td></tr>`).join('') +
+          L.who.map((w) => `<tr><th>${w}</th>${state.cells[w].map((c, i) => `<td data-l="${DIAS_L[i]}${L.need[i] ? ' · cubrir ' + L.need[i][0] + '–' + L.need[i][1] : ''}"><input type="text" value="${esc(c)}" data-w="${w}" data-d="${i}" aria-label="${w}, ${DIAS_L[i]}" spellcheck="false" autocomplete="off"></td>`).join('')}<td class="tot" data-tot="${w}" data-l="Total semana"></td><td data-l="Pausa"><label class="chk"><input type="checkbox" data-p="${w}"${state.pausa[w] ? ' checked' : ''}> 15 min</label></td></tr>`).join('') +
           '</tbody></table></div><div id="cqTl"></div><div class="cq-out" id="cqOut" aria-live="polite"></div>' +
           '<div class="row-btns"><button type="button" class="btn primary" data-ok disabled>Arregla lo que está en rojo</button><button type="button" class="btn" data-reset>Empezar de nuevo</button></div>';
         refresh();
@@ -268,7 +268,11 @@
         }
         root.querySelectorAll('[data-w]').forEach((inp) => inp.classList.toggle('bad', parseCell(inp.value) === null));
         root.querySelector('#cqTl').innerHTML = timeline(ev);
-        root.querySelector('#cqOut').innerHTML = ok ? '<p class="fb ok">✓ Todo legal y cubierto. ¡Puedes pasar de nivel!</p>' : `<ul class="viol">${allV.map((x) => `<li>${x}</li>`).join('')}${ev.uncovered.map((i) => `<li><b>Cobertura</b>: el ${DIAS_L[i].toLowerCase()} queda alguna hora sin cubrir.</li>`).join('')}</ul>`;
+        const items = allV.concat(ev.uncovered.map((i) => `<b>Cobertura</b>: el ${DIAS_L[i].toLowerCase()} queda alguna hora sin cubrir.`));
+        const MAXV = 4;
+        root.querySelector('#cqOut').innerHTML = ok
+          ? '<p class="fb ok">✓ Todo legal y cubierto. ¡Puedes pasar de nivel!</p>'
+          : `<p class="viol-n">${items.length === 1 ? '1 cosa por arreglar' : items.length + ' cosas por arreglar'}</p><ul class="viol">${items.slice(0, MAXV).map((x) => `<li>${x}</li>`).join('')}</ul>${items.length > MAXV ? `<details class="viol-more"><summary>Ver ${items.length - MAXV} más</summary><ul class="viol">${items.slice(MAXV).map((x) => `<li>${x}</li>`).join('')}</ul></details>` : ''}`;
         const b = root.querySelector('[data-ok]');
         b.disabled = !ok;
         b.textContent = ok ? '✓ Cuadrante legal: siguiente nivel →' : 'Arregla lo que está en rojo';

@@ -194,7 +194,26 @@
   });
 
   /* ---------- pantallas ---------- */
+  /* menú en móvil: cajón lateral que se abre con ☰ */
+  const menuBtn = $('#btnMenu');
+  const scrim = $('#scrim');
+  function setMenu(open) {
+    document.body.classList.toggle('menu-open', open);
+    menuBtn.setAttribute('aria-expanded', String(open));
+    scrim.hidden = !open;
+    if (open) {
+      const a = el.sidebar.querySelector('.active');
+      if (a) a.scrollIntoView({ block: 'center' });
+    }
+  }
+  menuBtn.addEventListener('click', () => setMenu(!document.body.classList.contains('menu-open')));
+  scrim.addEventListener('click', () => setMenu(false));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.body.classList.contains('menu-open')) setMenu(false);
+  });
+
   function go(r) {
+    setMenu(false);
     for (const k of [...opened]) if (k[0] === '!') opened.delete(k);
     if (cleanup) {
       try {
@@ -212,6 +231,7 @@
     else if (r.startsWith('g/') && GAMES[r.slice(2)]) showGame(r.slice(2));
     else showHome();
     el.stage.scrollTop = 0;
+    window.scrollTo(0, 0);
   }
   function showHome() {
     route = 'home';
@@ -307,6 +327,7 @@
       if (e.target.closest('[data-nextslide]')) {
         k++;
         el.stage.scrollTop = 0;
+        window.scrollTo(0, 0);
         if (k === slides.length) say('Minitest: tres preguntas, una a una.', '');
         return render();
       }

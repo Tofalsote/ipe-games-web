@@ -247,6 +247,8 @@
     mount(root, api) {
       let sc = null;
       let st = null;
+      let zoom = false; /* en el móvil, escena ampliada con desplazamiento lateral */
+      const narrow = () => window.matchMedia('(max-width: 900px)').matches;
       const best = api.store.get('best', {});
       function menu() {
         root.innerHTML =
@@ -262,11 +264,14 @@
       }
       function draw() {
         const n = Object.keys(st.found).length;
+        const old = root.querySelector('.insp-art');
+        const sx = old ? old.scrollLeft : 0;
         root.innerHTML =
-          `<div class="insp-head"><button type="button" class="link" data-back>← Escenas</button><b>${esc(sc.title)}</b><span class="count">${n} / ${sc.hz.length} peligros</span><button type="button" class="link" data-give>Me rindo</button></div>` +
-          `<div class="insp"><div class="insp-art"><svg viewBox="0 0 800 450" class="art" role="img" aria-label="${esc(sc.title)}: busca los peligros">${sc.art()}` +
+          `<div class="insp-head"><button type="button" class="link" data-back>← Escenas</button><b>${esc(sc.title)}</b><span class="count">${n} / ${sc.hz.length} peligros</span><button type="button" class="link zoom-btn" data-zoom aria-pressed="${zoom}">${zoom ? '🔍 Ver entera' : '🔍 Ampliar escena'}</button><button type="button" class="link" data-give>Me rindo</button></div>` +
+          `<div class="insp"><div class="insp-art${zoom ? ' zoomed' : ''}"><svg viewBox="0 0 800 450" class="art" role="img" aria-label="${esc(sc.title)}: busca los peligros">${sc.art()}` +
           sc.hz.map((h, k) => `<g class="hot${st.found[k] ? ' found' : ''}${st.cur === k ? ' cur' : ''}" data-hz="${k}" tabindex="0" role="button" aria-label="${st.found[k] ? esc(h.n) : 'Zona por revisar'}"><circle cx="${h.x}" cy="${h.y}" r="${h.r}" class="hot-c"/>${st.found[k] ? `<circle cx="${h.x}" cy="${h.y}" r="13" class="mark ${st.found[k].ok ? 'ok' : 'meh'}"/><text x="${h.x}" y="${h.y + 5}" class="mark-t">${st.found[k].ok ? '✓' : '!'}</text>` : ''}</g>`).join('') +
           `</svg></div><aside class="insp-side" id="side">${side()}</aside></div>`;
+        root.querySelector('.insp-art').scrollLeft = sx;
       }
       function side() {
         if (st.cur == null) {
@@ -316,6 +321,10 @@
           st.cur = null;
           return draw();
         }
+        if (t.closest('[data-zoom]')) {
+          zoom = !zoom;
+          return draw();
+        }
         const hz = t.closest('[data-hz]');
         if (hz && st.cur == null) {
           const k = +hz.dataset.hz;
@@ -324,7 +333,9 @@
           st.step = 0;
           st.order = shuffle(sc.hz[k].med);
           api.say('¡Peligro localizado! Ahora clasifícalo.', 'happy');
-          return draw();
+          draw();
+          if (narrow()) $('#side').scrollIntoView({ behavior: 'smooth', block: 'start' });
+          return;
         }
         if (t.closest('svg.art') && !hz && st.cur == null && Object.keys(st.found).length < sc.hz.length) {
           st.miss++;
@@ -417,7 +428,7 @@
           '<details class="legend-box"><summary>¿Cómo se gradúan?</summary><p><b>Probabilidad</b>: alta (siempre o casi siempre) · media (en algunas ocasiones) · baja (raras veces).</p><p><b>Consecuencias</b>: ligeramente dañino (cortes y magulladuras pequeñas, molestias) · dañino (torceduras, fracturas menores, quemaduras, sordera, trastornos musculoesqueléticos) · extremadamente dañino (amputaciones, fracturas mayores, intoxicaciones, lesiones mortales).</p></details>' +
           '<div class="mx-wrap"><ol class="mx-cards">' +
           cards.map((x, i) => `<li class="mx-card${place[i] ? ' placed' : ''}${sel === i ? ' on' : ''}" data-card="${i}" draggable="${!checked}"><b>${i + 1}</b><span>${esc(x.t)}</span>${checked ? `<small class="${place[i] === x.p + x.c ? 'ok' : 'bad'}">${place[i] === x.p + x.c ? '✓' : '✗'} ${NIVEL[x.p + x.c]}: ${esc(x.why)}</small>` : ''}</li>`).join('') +
-          '</ol><table class="mx"><thead><tr><th></th><th>Ligeramente<br>dañino</th><th>Dañino</th><th>Extremadamente<br>dañino</th></tr></thead><tbody>' +
+          '</ol><table class="mx"><thead><tr><th></th><th><span class="lg">Ligeramente<br></span><span class="sh">Lig. </span>dañino</th><th>Dañino</th><th><span class="lg">Extremadamente<br></span><span class="sh">Extr. </span>dañino</th></tr></thead><tbody>' +
           [['A', 'Alta'], ['M', 'Media'], ['B', 'Baja']].map(([p, n]) => `<tr><th>${n}</th>${['LD', 'D', 'ED'].map((c) => cell(p, c)).join('')}</tr>`).join('') +
           '</tbody></table></div>';
         if (!checked) h += `<div class="row-btns"><button type="button" class="btn primary" data-check${free.length ? ' disabled' : ''}>Comprobar</button>${free.length ? `<small>Faltan ${free.length} por colocar.</small>` : ''}</div>`;
