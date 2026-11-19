@@ -3864,3 +3864,44 @@ body.ipe .ranks span { font: 700 15px/1.25 var(--sans); }
 @media (max-width: 900px) { .esc-svg { max-height: none; } }
 .esc-room .fb { background: #2e2a18; color: #ffe7a0; border-left-color: #ffcd38; }
 .esc-room .fb.bad { background: #4a120c; color: #ffc2b8; border-left-color: #ff3b2a; }
+
+/* ---- escape room v3: todo en una columna que cabe en la ventana ---- */
+.esc-play { display: block !important; }
+.esc-play .esc-stage { position: relative; margin: 0 0 10px; display: flex; justify-content: center; background: #0d0b10; }
+.esc-svg { width: 100%; max-height: none; min-height: 0; height: auto; }
+.esc-stage .esc-top { position: absolute; left: 8px; right: 8px; top: 8px; z-index: 2; margin: 0; pointer-events: none; align-items: flex-start; }
+.esc-stage .esc-clock { box-shadow: 3px 3px 0 rgba(0, 0, 0, .5); border-color: #000; }
+.esc-stage .esc-clock span { font-size: 26px; }
+.esc-stage .esc-clock small { font-size: 9.5px; max-width: 110px; }
+.esc-stage .esc-locks { background: rgba(13, 11, 16, .7); padding: 3px 8px; font-size: 20px; gap: 4px; border: 2px solid #000; }
+#escPanel .esc-room { padding: 10px 14px 12px; }
+#escPanel .esc-room h3 { font-size: 20px; margin: 0 0 4px; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+#escPanel .esc-room h3 .esc-n { font-style: normal; }
+#escPanel .esc-room p { margin: 0 0 8px; font-size: 15px; line-height: 1.4; }
+.esc-ask label { display: block; font: 700 12px var(--mono); margin-bottom: 4px; color: #f1eadb; }
+.esc-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.esc-row input { flex: 1 1 180px; min-width: 0; font: 700 18px var(--mono); padding: 6px 10px; }
+#escPanel .esc-room .fb { margin: 8px 0 0; padding: 6px 10px; font-size: 14px; }
+#escPanel .finish { padding: 12px 14px; gap: 14px; }
+#escPanel .finish .big { font-size: 40px; }
+#escPanel .finish p { margin: 4px 0 8px; font-size: 14.5px; }
+#escPanel .esc-intro .lead { margin: 0 0 6px; font-size: 16px; }
+#escPanel .esc-intro .small { margin: 0 0 8px; }
+.esc-dead { background: #2a0a08 !important; color: #ffd9d2; border-color: #000 !important; }
+.esc-dead b { color: #ff6b5a; }
+/* fuego que crece */
+.esc-svg .e-spot.on .e-spot-in { transform: scale(var(--grow, 1)); transition: transform 1.2s cubic-bezier(.3, 1.4, .5, 1); }
+.esc-svg .e-spot.big .e-flame.f1 { fill: #ff3d12; }
+.esc-svg .e-spot.big .e-flame { animation-duration: .35s; }
+.esc-svg .e-spot.big.on .e-spot-in { transform: scale(calc(var(--grow, 1) * .9)); transition-duration: 2s; }
+/* muerte: el personaje cae al suelo */
+.esc-svg .e-me-in { transform-box: fill-box; transform-origin: 50% 100%; transition: transform 1s cubic-bezier(.6, 0, .9, .6) .3s; }
+.esc-svg.lost .e-me-in { transform: rotate(90deg) translate(-6px, -14px); animation: none; }
+.esc-svg.lost .e-head { fill: #b9c3a8; }
+.esc-svg.lost .e-big { fill: #ff3b2a; }
+@media (max-width: 900px) {
+  .esc-stage .esc-clock span { font-size: 20px; }
+  .esc-stage .esc-clock small { display: none; }
+  .esc-stage .esc-locks { font-size: 14px; }
+  .esc-row .btn { flex: 1; }
+}

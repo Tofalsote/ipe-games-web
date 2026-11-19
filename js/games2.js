@@ -822,6 +822,8 @@
     { at: 0.8, x: 292, y: 300, s: 0.8 },
     { at: 0.88, x: 700, y: 300, s: 0.7 },
     { at: 0.94, x: 240, y: 300, s: 0.85 },
+    { at: 0.7, x: 420, y: 304, s: 1.9, big: true }, /* el gran incendio del centro */
+    { at: 0.86, x: 560, y: 304, s: 1.6, big: true },
   ];
   /* dónde se para el personaje y dónde se marca el objetivo de cada candado */
   const ESC_SPOT = [
@@ -875,7 +877,7 @@
       '<path d="M532 228c-4-18 8-26 8-40 10 10 14 22 10 32 5-5 6-12 6-18 8 12 10 20 2 26Z" class="e-flame f3"/>' +
       '<path d="M512 228c-2-12 6-18 6-28 8 8 10 18 6 28Z M532 228c-2-10 6-16 6-24 6 8 8 16 4 24Z" class="e-flame core"/></g>';
     /* focos de propagación */
-    s += '<g class="e-spread">' + ESC_SPREAD.map((f, i) => `<g class="e-spot" data-spot="${i}" transform="translate(${f.x} ${f.y}) scale(${f.s})"><g class="e-spot-in"><ellipse cx="0" cy="-8" rx="40" ry="22" fill="url(#escGlow)" class="e-glow"/><path d="M-22 0c-5-16 6-22 5-36 9 8 12 17 10 26 3-6 3-12 2-18 9 9 13 20 9 28Z" class="e-flame f1"/><path d="M-8 0c-6-21 8-30 6-46 10 10 15 22 12 34 4-6 6-13 4-21 9 12 12 24 5 33Z" class="e-flame f2"/><path d="M-4 0c-2-9 4-14 4-21 6 6 8 13 4 21Z" class="e-flame core"/></g></g>`).join('') + '</g>';
+    s += '<g class="e-spread">' + ESC_SPREAD.map((f, i) => `<g class="e-spot${f.big ? ' big' : ''}" data-spot="${i}" transform="translate(${f.x} ${f.y}) scale(${f.s})"><g class="e-spot-in"><ellipse cx="0" cy="-8" rx="40" ry="22" fill="url(#escGlow)" class="e-glow"/><path d="M-22 0c-5-16 6-22 5-36 9 8 12 17 10 26 3-6 3-12 2-18 9 9 13 20 9 28Z" class="e-flame f1"/><path d="M-8 0c-6-21 8-30 6-46 10 10 15 22 12 34 4-6 6-13 4-21 9 12 12 24 5 33Z" class="e-flame f2"/><path d="M-4 0c-2-9 4-14 4-21 6 6 8 13 4 21Z" class="e-flame core"/></g></g>`).join('') + '</g>';
     /* resplandor naranja que crece con el fuego */
     s += '<rect width="800" height="400" class="e-heat"/>';
     /* nube de CO2 al usar el extintor */
@@ -914,12 +916,34 @@
       let state = 'intro'; /* intro · play · win · lose */
       const best = () => api.store.get('best', null);
       root.innerHTML =
-        '<div class="esc-top"><div class="esc-clock" id="escClock" aria-live="off"><span id="escT">2:30</span><small>hasta que el fuego llene la sala</small><b class="esc-pen" id="escPen"></b></div>' +
+        '<div class="esc-play"><div class="esc-stage"><div class="esc-top"><div class="esc-clock" id="escClock" aria-live="off"><span id="escT">2:30</span><small>hasta que el fuego llene la sala</small><b class="esc-pen" id="escPen"></b></div>' +
         `<div class="esc-locks" id="escLocks" aria-label="Candados">${CANDADOS.map((x, i) => `<i data-l="${i}" title="${esc(x.t)}">🔒</i>`).join('')}</div></div>` +
-        `<div class="esc-play"><div class="esc-stage">${escScene()}</div><div id="escPanel"></div></div>`;
+        `${escScene()}</div><div id="escPanel"></div></div>`;
       const svg = root.querySelector('.esc-svg');
       const panel = root.querySelector('#escPanel');
       const remaining = () => Math.max(0, (endAt - Date.now()) / 1000);
+      /* que todo quepa sin scroll: la escena se queda con el alto libre de la ventana */
+      function fit() {
+        if (!root.isConnected) return;
+        const top = svg.getBoundingClientRect().top + (document.getElementById('stage').scrollTop || 0) + window.scrollY;
+        const free = window.innerHeight - top - panel.offsetHeight - 30;
+        const maxByWidth = svg.parentNode.clientWidth / 2;
+        let h = Math.round(Math.max(150, Math.min(free, maxByWidth)));
+        const set = () => {
+          svg.style.height = h + 'px';
+          svg.style.width = h * 2 + 'px';
+          svg.style.maxWidth = '100%';
+        };
+        set();
+        /* lo que aún sobre por márgenes del diseño se le quita a la escena */
+        const st = document.getElementById('stage');
+        const over = Math.max(st.scrollHeight - st.clientHeight, document.documentElement.scrollHeight - window.innerHeight);
+        if (over > 0 && h > 150) {
+          h = Math.max(150, h - over - 2);
+          set();
+        }
+      }
+      window.addEventListener('resize', fit);
       const fmt = (t) => {
         const s = Math.ceil(t);
         return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
@@ -959,7 +983,8 @@
         svg.style.setProperty('--fire', fire.toFixed(3));
         svg.style.setProperty('--smoke', smoke.toFixed(3));
         svg.style.setProperty('--smokeh', (0.25 + frac * 0.75).toFixed(3));
-        svg.style.setProperty('--heat', state === 'intro' ? 0 : (frac * 0.3).toFixed(3));
+        svg.style.setProperty('--heat', state === 'intro' ? 0 : (frac * 0.35).toFixed(3));
+        svg.style.setProperty('--grow', (0.6 + frac * 1.5).toFixed(3));
         svg.querySelectorAll('.e-spot').forEach((g, i) => g.classList.toggle('on', state !== 'intro' && state !== 'win' && frac >= ESC_SPREAD[i].at));
         root.querySelector('#escT').textContent = fmt(t);
         const clock = root.querySelector('#escClock');
@@ -995,9 +1020,12 @@
         state = 'lose';
         clearInterval(timer);
         sync();
-        svg.querySelector('#escBig').textContent = 'SIN TIEMPO';
-        panel.innerHTML = `<div class="finish fail"><div class="big">💨</div><div><b>El humo ha llenado la sala</b><p>Los bomberos te sacan a tiempo, pero esto no se puede repetir en la vida real. Si hay humo: sal agachado (el aire limpio está abajo), toca las puertas antes de abrirlas, ciérralas al salir, nunca uses el ascensor y ve al punto de encuentro.</p><p>Has abierto ${k} de ${CANDADOS.length} candados.</p><button type="button" class="btn primary" data-start>↻ Intentarlo otra vez</button></div></div>`;
-        api.say('Se acabó el tiempo. ¡Repasa y vuelve a intentarlo!', 'oops');
+        setTimeout(() => {
+          if (state === 'lose') svg.querySelector('#escBig').textContent = 'HAS MUERTO';
+        }, 1100);
+        panel.innerHTML = `<div class="finish fail esc-dead"><div class="big">☠️</div><div><b>Has muerto: el humo te ha intoxicado</b><p>En los incendios, la mayoría de las muertes las causa el humo, no las llamas. En la vida real: sal agachado (el aire limpio está abajo), toca las puertas antes de abrirlas, ciérralas al salir, nunca uses el ascensor y ve al punto de encuentro. Has abierto ${k} de ${CANDADOS.length} candados.</p><button type="button" class="btn primary" data-start>↻ Intentarlo otra vez</button></div></div>`;
+        fit();
+        api.say('Se acabó el tiempo… Repasa y vuelve a intentarlo.', 'oops');
       }
       function win() {
         state = 'win';
@@ -1013,12 +1041,15 @@
           if (state === 'win') svg.querySelector('#escBig').textContent = '¡FUERA!';
         }, 1400);
         panel.innerHTML = `<div class="finish"><div class="big">🔓</div><div><b>¡Has escapado con ${fmt(left)} de margen!</b><p>Fallos: ${errs} · pistas: ${hints} · nota: ${score} %${b != null ? ` · tu mejor margen: ${fmt(Math.max(b, left))}` : ''}</p><p class="small">La nota depende del tiempo que te sobra: con 1:30 o más, 100 %.</p><button type="button" class="btn primary" data-start>Volver a jugar</button></div></div>`;
+        fit();
       }
       function drawPanel() {
         const c = CANDADOS[k];
         panel.innerHTML =
-          `<div class="esc-room"><small class="esc-n">Candado ${k + 1} de ${CANDADOS.length}</small><h3>${esc(c.t)}</h3><p>${esc(c.story)}</p><label class="esc-in"><span>${esc(c.q)}</span><input type="text" id="escIn" autocomplete="off" spellcheck="false" autocapitalize="off"></label>` +
-          `<div class="row-btns"><button type="button" class="btn primary" data-try>Probar</button><button type="button" class="btn" data-hint${showHint ? ' disabled' : ''}>Pista (−${ESC_PISTA} s)</button></div>${showHint ? `<p class="fb">💡 ${esc(c.hint)}</p>` : ''}<p class="fb bad" id="escMsg" hidden></p></div>`;
+          `<div class="esc-room"><h3><small class="esc-n">Candado ${k + 1}/${CANDADOS.length}</small> ${esc(c.t)}</h3><p>${esc(c.story)}</p>` +
+          `<div class="esc-ask"><label for="escIn">${esc(c.q)}</label><div class="esc-row"><input type="text" id="escIn" autocomplete="off" spellcheck="false" autocapitalize="off"><button type="button" class="btn primary" data-try>Probar</button><button type="button" class="btn" data-hint${showHint ? ' disabled' : ''}>Pista (−${ESC_PISTA} s)</button></div></div>` +
+          `${showHint ? `<p class="fb">💡 ${esc(c.hint)}</p>` : ''}<p class="fb bad" id="escMsg" hidden></p></div>`;
+        fit();
         const inp = panel.querySelector('#escIn');
         if (inp && !window.matchMedia('(max-width: 900px)').matches) inp.focus();
       }
@@ -1040,6 +1071,7 @@
           const m = panel.querySelector('#escMsg');
           m.hidden = false;
           m.textContent = `✗ No se abre. −${ESC_FALLO} s. Piensa en lo que has visto en las fichas.`;
+          fit();
           inp.select();
           api.say('¡Nada! El humo sigue bajando…', 'oops');
         }
@@ -1057,9 +1089,14 @@
       root.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && e.target.id === 'escIn') tryIt();
       });
-      api.onLeave(() => clearInterval(timer));
+      api.onLeave(() => {
+        clearInterval(timer);
+        window.removeEventListener('resize', fit);
+      });
       sync();
       panel.innerHTML = `<div class="esc-intro"><p class="lead">Viernes, 21:00. Has ido al CPD a revisar una alarma y la puerta se ha cerrado detrás de ti. El SAI empieza a arder. Tienes <b>2:30</b> antes de que el humo y las llamas llenen la sala: abre los seis candados con lo que has aprendido.</p><p class="small">Cada fallo resta ${ESC_FALLO} s y cada pista ${ESC_PISTA} s.${best() != null ? ` Tu mejor margen: ${fmt(best())}.` : ''}</p><button type="button" class="btn primary big" data-start>▶ Empezar la cuenta atrás</button></div>`;
+      requestAnimationFrame(fit);
+      setTimeout(fit, 300);
       api.say('El examen final, en forma de escape room. ¿Te atreves?', '');
     },
   };
