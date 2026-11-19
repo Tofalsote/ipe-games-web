@@ -4011,3 +4011,77 @@ body.ipe .ranks span { font: 700 15px/1.25 var(--sans); }
 .esc-svg.door-open .e-spot { transition: none; }
 .esc-svg.rescue .e-water { animation: escWaterOff .8s ease-out 6.2s forwards; }
 @keyframes escWaterOff { to { opacity: 0; } }
+
+/* =====================================================================
+   Inspector PRL: escenas con más diseño (volumen, sombras y luz)
+   ===================================================================== */
+svg.art { background: #dfe5ea; }
+svg.art .shd { fill: #000; opacity: .16; }
+svg.art .seam { stroke: #b9c2cc; stroke-width: 1.5; }
+svg.art .ceil-dark { fill: #2a3038; }
+svg.art .ceil-lamp { fill: #fbfdff; stroke: #c9d2db; stroke-width: 1; }
+svg.art .tray { fill: #8e98a3; stroke: #5d6670; stroke-width: 1; }
+svg.art .tray-c { stroke: #2d6fd1; stroke-width: 2; fill: none; }
+svg.art .sign-w { fill: #fff; stroke: #d93a24; stroke-width: 2; }
+svg.art .sign-t { font: 700 8.5px var(--mono); fill: #d93a24; text-anchor: middle; }
+svg.art .cam { fill: #f1efe6; stroke: #4f575f; } svg.art .cam-l { fill: #17141f; } svg.art .cam-arm { stroke: #4f575f; stroke-width: 3; }
+svg.art .skirt { fill: #6d757e; } svg.art .skirt-w { fill: #8a6a48; } svg.art .skirt-w.dim { fill: #3e352d; }
+svg.art .perf { fill: #6f7882; opacity: .6; }
+svg.art .rack { fill: url(#iaRack); stroke: #0b0d10; stroke-width: 2; }
+svg.art .rack-top { fill: #444b54; }
+svg.art .srv { fill: #39404a; stroke: #252a31; stroke-width: 1; }
+svg.art .srv-vent { stroke: #2a3038; stroke-width: 1.4; fill: none; }
+svg.art .ok-led { fill: #2fd06a; filter: drop-shadow(0 0 2px #2fd06a); } svg.art .ok-led.dim { opacity: .55; filter: none; }
+svg.art .act-led { fill: #ffcd38; filter: drop-shadow(0 0 2px #ffcd38); }
+svg.art .rack-door { fill: #3a4048; stroke: #0b0d10; stroke-width: 2; } svg.art .rack-mesh { fill: #262b31; opacity: .9; }
+svg.art .cable-shd { fill: none; stroke: #000; opacity: .14; stroke-width: 7; }
+svg.art .crac { stroke: #6b737b; stroke-width: 2; } svg.art .crac-lcd { fill: #0b1220; } svg.art .crac-t { fill: #6dd3ff; font: 700 11px var(--mono); text-anchor: middle; }
+svg.art .grill-l { stroke: #7d868f; stroke-width: 3; stroke-linecap: round; }
+svg.art .door-f { fill: #6d757e; } svg.art .door { fill: #b4bcc4; stroke: #6d757e; stroke-width: 2; } svg.art .handle-d { fill: #3b4148; }
+svg.art .exit { fill: #12804e; filter: drop-shadow(0 0 4px rgba(46, 220, 120, .55)); }
+svg.art .box { fill: url(#iaBox); stroke: #7a522a; stroke-width: 1.5; } svg.art .box-hi { stroke: rgba(255, 255, 255, .35); stroke-width: 2; }
+svg.art .box-tape { fill: #e9d3a3; opacity: .85; } svg.art .box-l { stroke: #7a522a; stroke-width: 1.5; }
+svg.art .ext { fill: #d93a24; stroke: #5e1210; stroke-width: 1.5; } svg.art .ext-top { fill: #2b3036; } svg.art .ext-hose { stroke: #17141f; stroke-width: 2.5; fill: none; }
+svg.art .ext-lbl { fill: #2d6fd1; } svg.art .ext-t { fill: #fff; font: 700 7.5px var(--mono); text-anchor: middle; }
+svg.art .ext-sign { fill: #d93a24; }
+svg.art .srv-box { fill: #3d434a; stroke: #111; }
+svg.art .trous { stroke: #2b3340; stroke-width: 7; stroke-linecap: round; fill: none; }
+svg.art .shoe { stroke: #17141f; stroke-width: 5; stroke-linecap: round; }
+svg.art .arm { stroke-width: 7; stroke-linecap: round; fill: none; }
+svg.art .torso { stroke: rgba(0, 0, 0, .25); stroke-width: 1; }
+svg.art .hand, svg.art .skin, svg.art .skin-n { fill: #f2c39a; } svg.art .skin { stroke: #b07f57; stroke-width: 1; }
+svg.art .hair { fill: #3b2a20; }
+svg.art .win-f { fill: #f6f7f8; stroke: #8e98a3; stroke-width: 2; } svg.art .win { stroke: #8e98a3; stroke-width: 2; } svg.art .win-l { stroke: #f6f7f8; stroke-width: 5; }
+svg.art .sill { fill: #f6f7f8; stroke: #8e98a3; } svg.art .city { fill: #b9d5ea; opacity: .8; }
+svg.art .sun { fill: #ffd84a; }
+svg.art .plank { stroke: rgba(90, 58, 26, .3); stroke-width: 1.2; } svg.art .plank.dim { stroke: rgba(0, 0, 0, .3); }
+svg.art .poster { fill: #fff; stroke: #c9d2db; } svg.art .poster-t { font: 700 16px var(--mono); fill: #2d5be3; text-anchor: middle; } svg.art .poster-l { stroke: #c9d2db; stroke-width: 3; stroke-linecap: round; }
+svg.art .desk-leg { stroke: #6b4a2a; stroke-width: 6; stroke-linecap: round; }
+svg.art .mon { fill: #1c2026; } svg.art .scr-txt { stroke: rgba(255, 255, 255, .55); stroke-width: 3; stroke-linecap: round; }
+svg.art .kbd { fill: #3d434a; } svg.art .kbd-k { stroke: #6b737b; stroke-width: 2; stroke-dasharray: 4 2; } svg.art .mouse { fill: #3d434a; }
+svg.art .mug { fill: #e9f1fb; stroke: #6b737b; } svg.art .mug-h { fill: none; stroke: #6b737b; stroke-width: 2; } svg.art .steam { fill: none; stroke: #9aa3ab; stroke-width: 1.5; stroke-linecap: round; opacity: .7; }
+svg.art .chair { fill: #3f4650; } svg.art .chair-l { stroke: #3f4650; stroke-width: 5; stroke-linecap: round; } svg.art .wheel { fill: #17141f; }
+svg.art .handset { fill: none; stroke: #2b3036; stroke-width: 6; stroke-linecap: round; }
+svg.art .note-y { fill: #ffe27a; stroke: #c98a00; } svg.art .note-y.r { transform: rotate(6deg); transform-box: fill-box; transform-origin: center; }
+svg.art .strip { fill: #f1efe6; stroke: #4f575f; } svg.art .smoke { stroke: #5b636b; opacity: .65; stroke-width: 4; fill: none; stroke-linecap: round; }
+svg.art .cab { stroke: #6b737b; stroke-width: 2; } svg.art .drawer, svg.art .drawer-c { fill: #cfd5db; stroke: #6b737b; stroke-width: 2; }
+svg.art .pot { fill: #c2643a; stroke: #7a3a1e; } svg.art .leaf { fill: none; stroke: #2f8f4e; stroke-width: 6; stroke-linecap: round; }
+svg.art .ceil { fill: #f1f3f5; } svg.art .bldg { fill: #34456e; } svg.art .litw { fill: #ffd84a; }
+svg.art .van { fill: #f1efe6; } svg.art .van-w { fill: #9fc4e8; }
+svg.art .ladder { stroke: #d69a00; stroke-width: 5; stroke-linecap: round; }
+svg.art .clock-r { fill: #2b3036; } svg.art .clock { fill: #fbfaf6; stroke: none; }
+svg.art .toolbox { fill: #d93a24; stroke: #7a1d12; } svg.art .tool-h { fill: none; stroke: #2b3036; stroke-width: 4; } svg.art .tool-l { stroke: #7a1d12; stroke-width: 2; }
+svg.art .spool { fill: #c8945c; stroke: #6b4a26; stroke-width: 2; } svg.art .spool-c { fill: #6b4a26; }
+svg.art .panel { fill: #9aa3ab; stroke: #4f575f; } svg.art .breaker { fill: #2b3036; } svg.art .breaker-sw { fill: #f1efe6; }
+svg.art .wires { stroke: #d93a24; stroke-width: 2.5; fill: none; } svg.art .warn-tri { fill: #ffcd00; stroke: #17141f; stroke-width: 1.5; } svg.art .warn-t { font: 700 9px var(--mono); text-anchor: middle; fill: #17141f; }
+svg.art .tile-up { fill: #c3cad1; stroke: #6b737b; transform: rotate(-12deg); transform-box: fill-box; transform-origin: left bottom; }
+svg.art .floor2.dim { fill: #4a3b30; }
+svg.art .star { fill: #fff; opacity: .8; } svg.art .curtain { fill: #5b4a7a; } svg.art .rod { fill: #2b3036; }
+svg.art .frame { fill: #3a3128; } svg.art .frame-in { fill: #c9d6e2; } svg.art .frame-in.b { fill: #d9c3a2; } svg.art .frame-art { fill: none; stroke: #4f7a5a; stroke-width: 3; }
+svg.art .rug { fill: #6b3f4f; opacity: .7; } svg.art .rug-in { fill: none; stroke: #a7707f; stroke-width: 2; stroke-dasharray: 6 4; }
+svg.art .sofa { fill: #5f5296; } svg.art .sofa-b { fill: #4c4180; } svg.art .cushion { fill: #e0a458; }
+svg.art .laptop { fill: #2b3036; } svg.art .laptop-glow { stroke: #8ec5ff; stroke-width: 2; opacity: .7; }
+svg.art .phone { fill: #1c2026; } svg.art .phone-scr { fill: #8ec5ff; filter: drop-shadow(0 0 4px #8ec5ff); }
+svg.art .notif { fill: #fbfaf6; stroke: #2b3036; filter: drop-shadow(0 3px 0 rgba(0, 0, 0, .25)); } svg.art .notif-av { fill: #d93a24; } svg.art .notif-tail { stroke: #fbfaf6; stroke-width: 6; }
+svg.art .vign { pointer-events: none; }
+svg.art .lbl-bg { fill: rgba(10, 16, 32, .75); } svg.art .sign-t { font-size: 8px; }

@@ -107,25 +107,71 @@
      ===================================================================== */
   const TIPOS = { seguridad: 'Seguridad', higienico: 'Higiénico (medioambiental)', ergonomico: 'Ergonómico', psicosocial: 'Psicosocial' };
   const VAGA = (x) => ({ t: x || 'Tener más cuidado y prestar atención', ok: false, why: '«Tener cuidado» no es una medida: no elimina ni reduce el peligro.' });
-  /* piezas de dibujo reutilizables */
+  /* piezas de dibujo reutilizables (más detalle: volumen, sombras y luz) */
+  const DEFS =
+    '<defs>' +
+    '<linearGradient id="iaWall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9edf2"/><stop offset="1" stop-color="#cfd6de"/></linearGradient>' +
+    '<linearGradient id="iaWallW" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3ebe0"/><stop offset="1" stop-color="#e2d4c2"/></linearGradient>' +
+    '<linearGradient id="iaWallN" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5d6170"/><stop offset="1" stop-color="#7b7f8c"/></linearGradient>' +
+    '<linearGradient id="iaFloor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#aeb6bf"/><stop offset="1" stop-color="#8e97a1"/></linearGradient>' +
+    '<linearGradient id="iaWood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfa576"/><stop offset="1" stop-color="#a97c4e"/></linearGradient>' +
+    '<linearGradient id="iaRack" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1c2026"/><stop offset=".5" stop-color="#2f353d"/><stop offset="1" stop-color="#1a1d22"/></linearGradient>' +
+    '<linearGradient id="iaMetal" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#b9c0c7"/><stop offset=".5" stop-color="#dfe4e8"/><stop offset="1" stop-color="#aab2ba"/></linearGradient>' +
+    '<linearGradient id="iaBox" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9a76d"/><stop offset="1" stop-color="#b98450"/></linearGradient>' +
+    '<linearGradient id="iaScr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b82f6"/><stop offset="1" stop-color="#1e3a8a"/></linearGradient>' +
+    '<linearGradient id="iaSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fd3ff"/><stop offset="1" stop-color="#e3f3ff"/></linearGradient>' +
+    '<linearGradient id="iaNight" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0f1a33"/><stop offset="1" stop-color="#26355c"/></linearGradient>' +
+    '<radialGradient id="iaGlow"><stop offset="0" stop-color="#fff6c8" stop-opacity=".9"/><stop offset="1" stop-color="#fff6c8" stop-opacity="0"/></radialGradient>' +
+    '<radialGradient id="iaDark" cx=".5" cy=".45" r=".75"><stop offset=".35" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></radialGradient>' +
+    '</defs>';
   const P = {
+    shadow(x, y, w) {
+      return `<ellipse cx="${x}" cy="${y}" rx="${w}" ry="${Math.max(4, w / 7)}" class="shd"/>`;
+    },
+    /* persona con volumen: pies en (x, y) */
     person(x, y, o) {
       o = o || {};
       const c = o.c || '#2d5be3';
-      return `<g class="ppl"><circle cx="${x}" cy="${y - 62}" r="11" class="skin"/><path d="M${x} ${y - 50}v32" style="stroke:${c}" class="limb"/><path d="M${x} ${y - 44}l${o.armL || -16} ${o.armLy || 16}M${x} ${y - 44}l${o.armR || 16} ${o.armRy || 16}" style="stroke:${c}" class="limb"/><path d="M${x} ${y - 18}l-10 18M${x} ${y - 18}l10 18" class="limb leg"/>${o.hat ? `<path d="M${x - 13} ${y - 66}a13 12 0 0 1 26 0z" class="hat-y"/>` : ''}</g>`;
+      const aL = o.armL ?? -16;
+      const aLy = o.armLy ?? 16;
+      const aR = o.armR ?? 16;
+      const aRy = o.armRy ?? 16;
+      const sx = (dx) => x + (dx < 0 ? -7 : 7);
+      return (
+        `<g class="ppl">${P.shadow(x, y + 2, 20)}` +
+        `<path d="M${x - 5} ${y - 20}l-6 20M${x + 5} ${y - 20}l6 20" class="trous"/>` +
+        `<path d="M${x - 15} ${y + 1}h9M${x + 6} ${y + 1}h9" class="shoe"/>` +
+        `<path d="M${sx(aL)} ${y - 46}l${aL} ${aLy}" class="arm" style="stroke:${c}"/>` +
+        `<path d="M${x - 11} ${y - 50}q11 -6 22 0l2 32h-26z" class="torso" style="fill:${c}"/>` +
+        `<path d="M${sx(aR)} ${y - 46}l${aR} ${aRy}" class="arm" style="stroke:${c}"/>` +
+        `<circle cx="${sx(aL) + aL}" cy="${y - 46 + aLy}" r="3.6" class="hand"/><circle cx="${sx(aR) + aR}" cy="${y - 46 + aRy}" r="3.6" class="hand"/>` +
+        `<rect x="${x - 3}" y="${y - 56}" width="6" height="6" class="skin-n"/><circle cx="${x}" cy="${y - 64}" r="11" class="skin"/><path d="M${x - 11} ${y - 66}a11 11 0 0 1 22 -2q-6 -6 -13 -3q-5 1 -9 5z" class="hair"/>` +
+        (o.hat ? `<path d="M${x - 13} ${y - 66}a13 12 0 0 1 26 0z" class="hat-y"/>` : '') +
+        '</g>'
+      );
     },
     rack(x, y, h, o) {
       o = o || {};
-      let s = `<rect x="${x}" y="${y}" width="90" height="${h}" rx="3" class="rack"/>`;
-      for (let k = 0; k < Math.floor((h - 20) / 22); k++) s += `<rect x="${x + 8}" y="${y + 10 + k * 22}" width="74" height="16" rx="1" class="srv"/><circle cx="${x + 74}" cy="${y + 18 + k * 22}" r="2.2" class="${k % 3 ? 'ok-led' : 'act-led'}"/>`;
-      if (o.open) s += `<path d="M${x + 90} ${y}l34 14v${h - 28}l-34 14z" class="rack-door"/>`;
+      let s = P.shadow(x + 45, y + h + 1, 52) + `<rect x="${x}" y="${y}" width="90" height="${h}" rx="4" class="rack"/><rect x="${x + 4}" y="${y + 4}" width="82" height="8" rx="2" class="rack-top"/>`;
+      for (let k = 0; k < Math.floor((h - 26) / 22); k++) {
+        const yy = y + 16 + k * 22;
+        s += `<rect x="${x + 8}" y="${yy}" width="74" height="16" rx="2" class="srv"/><path d="M${x + 12} ${yy + 5}h34M${x + 12} ${yy + 9}h34M${x + 12} ${yy + 13}h34" class="srv-vent"/><circle cx="${x + 74}" cy="${yy + 8}" r="2.4" class="${k % 3 ? 'ok-led' : 'act-led'}"/><circle cx="${x + 66}" cy="${yy + 8}" r="1.8" class="ok-led dim"/>`;
+      }
+      s += `<rect x="${x + 2}" y="${y + h - 10}" width="86" height="8" rx="2" class="rack-top"/>`;
+      if (o.open) s += `<path d="M${x + 90} ${y}l34 14v${h - 28}l-34 14z" class="rack-door"/><path d="M${x + 96} ${y + 24}l22 9v${h - 66}l-22 9z" class="rack-mesh"/>`;
       return s;
     },
     box(x, y, w, h) {
-      return `<rect x="${x}" y="${y}" width="${w}" height="${h}" class="box"/><path d="M${x} ${y + h / 3}h${w}M${x + w / 2} ${y}v${h / 3}" class="box-l"/>`;
+      return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="1.5" class="box"/><path d="M${x} ${y + 4}h${w}" class="box-hi"/><rect x="${x + w / 2 - 4}" y="${y}" width="8" height="${h / 2.6}" class="box-tape"/><path d="M${x + 5} ${y + h - 9}h${Math.min(16, w / 3)}" class="box-l"/>`;
     },
     waves(x, y) {
       return `<path d="M${x} ${y}q10 -14 0 -28M${x + 12} ${y + 6}q16 -20 0 -40M${x + 24} ${y + 12}q22 -26 0 -52" class="waves"/>`;
+    },
+    lamp(x, w) {
+      return `<rect x="${x - w / 2}" y="2" width="${w}" height="9" rx="3" class="ceil-lamp"/><ellipse cx="${x}" cy="20" rx="${w * 0.9}" ry="26" fill="url(#iaGlow)" opacity=".55"/>`;
+    },
+    plant(x, y) {
+      return `${P.shadow(x, y + 1, 18)}<path d="M${x - 14} ${y - 26}h28l-4 26h-20z" class="pot"/><path d="M${x} ${y - 26}q-22 -18 -14 -46M${x} ${y - 26}q4 -30 20 -42M${x} ${y - 26}q-6 -24 4 -56M${x} ${y - 26}q14 -14 26 -14" class="leaf"/>`;
     },
   };
   const SCENES = [
@@ -134,18 +180,26 @@
       title: 'La sala de servidores (CPD)',
       intro: 'Primer día en el CPD de la empresa. Antes de tocar nada, haz una ronda de inspección.',
       art() {
-        let s = '<rect width="800" height="300" class="wall"/><rect y="300" width="800" height="150" class="floor"/>';
-        for (let x = 0; x < 800; x += 50) s += `<path d="M${x} 300v150" class="tile"/>`;
-        for (let y = 340; y < 450; y += 40) s += `<path d="M0 ${y}h800" class="tile"/>`;
+        let s = DEFS + '<rect width="800" height="300" fill="url(#iaWall)"/><rect y="300" width="800" height="150" fill="url(#iaFloor)"/>';
+        for (let x = 160; x < 800; x += 160) s += `<path d="M${x} 18v282" class="seam"/>`;
+        s += '<rect width="800" height="18" class="ceil-dark"/>' + P.lamp(120, 90) + P.lamp(400, 90) + P.lamp(640, 90);
+        /* bandeja de cables del techo (bien recogidos) */
+        s += '<rect x="40" y="28" width="380" height="10" rx="2" class="tray"/><path d="M44 31h372M44 35h372" class="tray-c"/>';
+        s += '<rect x="516" y="32" width="138" height="22" rx="3" class="sign-w"/><text x="585" y="47" class="sign-t">CPD · ACCESO RESTRINGIDO</text>';
+        s += '<g><rect x="604" y="64" width="24" height="12" rx="3" class="cam"/><circle cx="606" cy="70" r="3" class="cam-l"/><path d="M628 70h10" class="cam-arm"/></g>';
+        s += '<rect y="296" width="800" height="6" class="skirt"/>';
+        for (let x = 0; x < 800; x += 50) s += `<path d="M${x} 302v148" class="tile"/>`;
+        for (let y = 342; y < 450; y += 40) s += `<path d="M0 ${y}h800" class="tile"/>`;
+        for (const [tx, ty] of [[100, 302], [250, 382], [700, 342]]) for (let k = 0; k < 12; k++) s += `<circle cx="${tx + 8 + (k % 4) * 11}" cy="${ty + 9 + Math.floor(k / 4) * 11}" r="1.6" class="perf"/>`;
         s += P.rack(60, 50, 250) + P.rack(170, 50, 250, { open: true }) + P.rack(300, 50, 250);
         s += '<path d="M235 260q8 30 -6 46q-10 12 4 22" class="cable-y"/><path d="M233 328l-8 8M233 328l3 10M233 328l9 4" class="spark"/><text x="248" y="338" class="zap">⚡</text>';
-        s += '<path d="M345 300c10 30 40 70 120 72s140 -6 200 10" class="cable-b"/><path d="M350 300c14 38 52 82 130 82s130 0 190 16" class="cable-y"/>';
-        s += '<rect x="660" y="80" width="120" height="220" rx="4" class="crac"/>';
-        for (let k = 0; k < 9; k++) s += `<path d="M672 ${100 + k * 18}h96" class="grill-l"/>`;
-        s += '<text x="720" y="296" class="lbl">CLIMA</text>' + P.waves(620, 150);
-        s += '<rect x="430" y="110" width="80" height="190" class="door"/><rect x="438" y="88" width="64" height="18" rx="2" class="exit"/><text x="470" y="101" class="exit-t">SALIDA</text>' + P.box(432, 230, 44, 70) + P.box(472, 250, 40, 50) + P.box(442, 196, 36, 34);
-        s += '<rect x="18" y="232" width="22" height="60" rx="8" class="ext"/><rect x="22" y="222" width="14" height="12" class="ext-top"/><text x="29" y="270" class="ext-t">AGUA</text>';
-        s += P.person(565, 372, { c: '#12804e', armL: 6, armLy: 30, armR: 22, armRy: 26 }) + '<rect x="560" y="378" width="56" height="26" class="srv-box"/><text x="588" y="396" class="lbl-s">30 kg</text>';
+        s += '<path d="M345 304c10 30 40 70 120 72s140 -6 200 10" class="cable-shd"/><path d="M345 300c10 30 40 70 120 72s140 -6 200 10" class="cable-b"/><path d="M350 300c14 38 52 82 130 82s130 0 190 16" class="cable-y"/>';
+        s += P.shadow(720, 301, 66) + '<rect x="660" y="80" width="120" height="220" rx="6" fill="url(#iaMetal)" class="crac"/><rect x="676" y="92" width="56" height="20" rx="3" class="crac-lcd"/><text x="704" y="106" class="crac-t">18 °C</text><circle cx="752" cy="102" r="4" class="ok-led"/>';
+        for (let k = 0; k < 8; k++) s += `<path d="M672 ${124 + k * 18}h96" class="grill-l"/>`;
+        s += '<text x="720" y="292" class="lbl">CLIMA</text>' + P.waves(620, 150);
+        s += P.shadow(470, 301, 48) + '<rect x="426" y="104" width="88" height="196" rx="2" class="door-f"/><rect x="430" y="110" width="80" height="190" class="door"/><rect x="494" y="200" width="10" height="4" rx="2" class="handle-d"/><rect x="438" y="84" width="64" height="20" rx="3" class="exit"/><text x="470" y="98" class="exit-t">SALIDA</text>' + P.box(432, 230, 44, 70) + P.box(472, 250, 40, 50) + P.box(442, 196, 36, 34);
+        s += P.shadow(29, 293, 16) + '<rect x="16" y="214" width="26" height="10" rx="2" class="ext-sign"/><rect x="18" y="232" width="22" height="60" rx="9" class="ext"/><rect x="22" y="222" width="14" height="12" rx="2" class="ext-top"/><path d="M36 226q10 4 8 20" class="ext-hose"/><rect x="19" y="256" width="20" height="18" rx="2" class="ext-lbl"/><text x="29" y="269" class="ext-t">AGUA</text>';
+        s += P.person(565, 372, { c: '#12804e', armL: 6, armLy: 30, armR: 22, armRy: 26 }) + P.shadow(588, 405, 32) + '<rect x="560" y="378" width="56" height="26" rx="2" class="srv-box"/><path d="M566 386h30M566 392h30" class="srv-vent"/><text x="588" y="400" class="lbl-s">30 kg</text>';
         return s;
       },
       hz: [
@@ -162,20 +216,27 @@
       title: 'La oficina de soporte (helpdesk)',
       intro: 'El equipo de soporte pasa 8 horas delante de pantallas atendiendo incidencias. ¿Qué ves?',
       art() {
-        let s = '<rect width="800" height="320" class="wall"/><rect y="320" width="800" height="130" class="floor2"/>';
-        s += '<rect x="30" y="40" width="200" height="170" class="win"/><path d="M130 40v170M30 125h200" class="win-l"/><circle cx="80" cy="80" r="18" class="sun"/>';
-        s += '<rect x="110" y="250" width="320" height="12" class="desk"/><path d="M120 262v120M420 262v120" class="desk-leg"/>';
+        let s = DEFS + '<rect width="800" height="320" fill="url(#iaWallW)"/><rect y="320" width="800" height="130" fill="url(#iaWood)"/>';
+        for (let y = 340; y < 450; y += 22) s += `<path d="M0 ${y}h800" class="plank"/>`;
+        for (let k = 0; k < 16; k++) s += `<path d="M${(k * 97) % 800} ${320 + (k % 5) * 22}v22" class="plank"/>`;
+        s += '<rect y="316" width="800" height="6" class="skirt-w"/>' + P.lamp(330, 70) + P.lamp(600, 70);
+        s += '<rect x="22" y="32" width="216" height="186" rx="3" class="win-f"/><rect x="30" y="40" width="200" height="170" fill="url(#iaSky)" class="win"/>';
+        s += '<path d="M30 190l30 -24 26 14 34 -30 30 18 30 -12 50 26v18h-200z" class="city"/><path d="M130 40v170M30 125h200" class="win-l"/><circle cx="80" cy="80" r="18" class="sun"/><circle cx="80" cy="80" r="30" fill="url(#iaGlow)"/><rect x="18" y="214" width="224" height="8" rx="2" class="sill"/>';
+        s += '<rect x="270" y="50" width="62" height="78" rx="2" class="poster"/><text x="301" y="76" class="poster-t">ITIL</text><path d="M282 90h38M282 100h30M282 110h34" class="poster-l"/>';
+        s += P.shadow(270, 384, 160) + '<rect x="106" y="246" width="328" height="14" rx="3" fill="url(#iaWood)" class="desk"/><path d="M120 260v120M420 260v120" class="desk-leg"/>';
         s += P.box(150, 206, 90, 22) + P.box(158, 186, 74, 20);
-        s += '<rect x="140" y="100" width="110" height="80" rx="3" class="mon"/><rect x="148" y="108" width="94" height="64" class="scr"/><path d="M150 112l40 0l-30 50z" class="glare"/><rect x="186" y="180" width="18" height="8" class="mon"/>';
-        s += '<rect x="268" y="236" width="80" height="12" rx="2" class="kbd"/>';
-        s += '<rect x="300" y="300" width="60" height="10" class="chair"/><path d="M330 310v60M310 380h40" class="chair-l"/>';
-        s += `<g class="ppl"><circle cx="300" cy="212" r="11" class="skin"/><path d="M302 224q14 34 26 76" class="limb" style="stroke:#d93a24"/><path d="M306 236l-26 6" class="limb" style="stroke:#d93a24"/><path d="M328 300l-30 4l-6 38" class="limb leg"/></g>`;
-        s += '<rect x="460" y="60" width="210" height="130" rx="4" class="mon"/><rect x="470" y="70" width="190" height="110" class="scr dark"/><text x="565" y="104" class="dash">TICKETS ABIERTOS</text><text x="565" y="148" class="dash-n">37</text><text x="565" y="168" class="dash-s">12 urgentes · SLA vencido</text>';
-        s += '<rect x="470" y="226" width="40" height="24" rx="4" class="phone"/><text x="490" y="222" class="ring">RING!</text><rect x="520" y="214" width="34" height="32" class="note-y"/><rect x="560" y="220" width="34" height="32" class="note-y"/>';
+        s += '<rect x="140" y="100" width="110" height="80" rx="4" class="mon"/><rect x="148" y="108" width="94" height="64" fill="url(#iaScr)" class="scr"/><path d="M156 124h40M156 132h56M156 140h30" class="scr-txt"/><path d="M150 112l40 0l-30 50z" class="glare"/><rect x="186" y="180" width="18" height="8" class="mon"/>';
+        s += '<rect x="268" y="236" width="80" height="12" rx="2" class="kbd"/><path d="M273 240h70M273 244h70" class="kbd-k"/><rect x="356" y="236" width="14" height="10" rx="5" class="mouse"/>';
+        s += '<path d="M384 246v-16a10 10 0 0 1 20 0v16z" class="mug"/><path d="M404 234q8 2 0 8" class="mug-h"/><path d="M390 226q2 -6 -1 -10M398 226q2 -6 -1 -10" class="steam"/>';
+        s += '<rect x="300" y="300" width="60" height="10" rx="3" class="chair"/><path d="M330 310v60M310 380h40" class="chair-l"/><circle cx="312" cy="382" r="4" class="wheel"/><circle cx="348" cy="382" r="4" class="wheel"/>';
+        s += `<g class="ppl">${P.shadow(318, 384, 26)}<path d="M328 300l-30 4l-6 38" class="trous"/><path d="M286 343h12" class="shoe"/><path d="M302 222q16 34 28 78" class="arm" style="stroke:#d93a24;stroke-width:16"/><path d="M306 236l-26 6" class="arm" style="stroke:#d93a24"/><circle cx="278" cy="243" r="3.6" class="hand"/><circle cx="300" cy="212" r="11" class="skin"/><path d="M289 210a11 11 0 0 1 22 -2q-6 -6 -13 -3q-5 1 -9 5z" class="hair"/></g>`;
+        s += '<rect x="452" y="52" width="226" height="146" rx="6" class="mon"/><rect x="470" y="70" width="190" height="110" class="scr dark"/><text x="565" y="104" class="dash">TICKETS ABIERTOS</text><text x="565" y="148" class="dash-n">37</text><text x="565" y="168" class="dash-s">12 urgentes · SLA vencido</text><rect x="556" y="198" width="18" height="12" class="mon"/>';
+        s += '<rect x="470" y="226" width="40" height="24" rx="4" class="phone"/><path d="M466 228q24 -14 48 0" class="handset"/><text x="490" y="218" class="ring">RING!</text><rect x="520" y="214" width="34" height="32" class="note-y"/><rect x="560" y="220" width="34" height="32" class="note-y r"/>';
         s += '<rect x="370" y="402" width="70" height="14" rx="3" class="strip"/><rect x="440" y="402" width="70" height="14" rx="3" class="strip"/>';
-        for (let k = 0; k < 6; k++) s += `<rect x="${374 + k * 22}" y="396" width="10" height="10" class="plug"/>`;
-        s += '<path d="M470 396q4 -14 -4 -26q8 -10 0 -24" class="smoke"/>';
-        s += '<rect x="610" y="270" width="110" height="140" class="cab"/><rect x="600" y="370" width="130" height="34" class="drawer"/><rect x="650" y="384" width="30" height="5" class="handle-d"/>';
+        for (let k = 0; k < 6; k++) s += `<rect x="${374 + k * 22}" y="396" width="10" height="10" rx="1" class="plug"/>`;
+        s += '<path d="M470 396q4 -14 -4 -26q8 -10 0 -24" class="smoke"/><path d="M482 394q6 -12 -2 -22" class="smoke"/>';
+        s += P.shadow(668, 411, 66) + '<rect x="610" y="270" width="110" height="140" rx="3" fill="url(#iaMetal)" class="cab"/><rect x="620" y="282" width="90" height="34" rx="2" class="drawer-c"/><rect x="650" y="296" width="30" height="5" rx="2" class="handle-d"/><rect x="600" y="370" width="130" height="34" rx="2" class="drawer"/><rect x="650" y="384" width="30" height="5" rx="2" class="handle-d"/>';
+        s += P.plant(762, 412);
         return s;
       },
       hz: [
@@ -192,20 +253,30 @@
       title: 'Instalación en casa de un cliente',
       intro: 'Te mandan a cablear la oficina de un cliente. Son las 23:45 y estás solo.',
       art() {
-        let s = '<rect width="800" height="330" class="wall"/><rect y="330" width="800" height="120" class="floor"/>';
+        let s = DEFS + '<rect width="800" height="330" fill="url(#iaWall)"/><rect y="330" width="800" height="120" fill="url(#iaFloor)"/>';
         s += '<rect width="800" height="50" class="ceil"/>';
         for (let x = 0; x < 800; x += 80) s += `<path d="M${x} 0v50" class="tile"/>`;
-        s += '<rect x="250" y="0" width="80" height="50" class="hole"/>';
+        s += '<path d="M0 50h800" class="tile"/><rect x="420" y="18" width="120" height="14" rx="3" class="ceil-lamp"/><rect x="250" y="0" width="80" height="50" class="hole"/>';
         for (let k = 0; k < 14; k++) s += `<circle cx="${255 + ((k * 37) % 70)}" cy="${56 + ((k * 23) % 60)}" r="1.8" class="dust"/>`;
+        s += '<rect y="326" width="800" height="6" class="skirt"/>';
+        for (let x = 0; x < 800; x += 60) s += `<path d="M${x} 332v118" class="tile"/>`;
+        s += '<rect x="12" y="82" width="206" height="146" rx="3" class="win-f"/><rect x="20" y="90" width="190" height="130" fill="url(#iaNight)" class="win"/>';
+        for (let k = 0; k < 9; k++) s += `<rect x="${28 + k * 20}" y="${120 + (k % 3) * 14}" width="12" height="${60 - (k % 3) * 14}" class="bldg"/><rect x="${31 + k * 20}" y="${126 + (k % 3) * 14}" width="3" height="4" class="litw"/>`;
+        s += '<path d="M115 90v130" class="win-l"/><rect x="40" y="170" width="70" height="26" rx="6" class="van"/><path d="M84 174h20v14h-20z" class="van-w"/><circle cx="55" cy="198" r="7" class="wheel"/><circle cx="96" cy="198" r="7" class="wheel"/><rect x="92" y="136" width="116" height="20" rx="4" class="lbl-bg"/><text x="150" y="150" class="lbl-w">3 clientes más hoy</text>';
         s += '<path d="M240 330l40 -300M300 330l40 -300" class="ladder"/>';
         for (let k = 0; k < 9; k++) s += `<path d="M${243 + k * 4.4} ${310 - k * 33}h60" class="ladder"/>`;
         s += P.box(292, 300, 46, 30) + P.person(316, 160, { c: '#2d5be3', armL: -4, armLy: -36, armR: 8, armRy: -40, hat: false });
-        s += '<rect x="20" y="90" width="190" height="130" class="win night"/><path d="M115 90v130" class="win-l"/><rect x="40" y="170" width="70" height="26" rx="6" class="van"/><circle cx="55" cy="198" r="7" class="wheel"/><circle cx="96" cy="198" r="7" class="wheel"/><text x="150" y="150" class="lbl-w">3 clientes más hoy</text>';
-        s += '<circle cx="520" cy="110" r="34" class="clock"/><path d="M520 110v-22M520 110l18 8" class="hands"/><text x="520" y="168" class="lbl">23:45</text>';
-        s += '<rect x="620" y="90" width="130" height="180" class="panel"/><rect x="632" y="104" width="106" height="150" class="panel-in"/>';
-        for (let k = 0; k < 6; k++) s += `<rect x="${640 + (k % 3) * 32}" y="${116 + Math.floor(k / 3) * 46}" width="22" height="34" class="breaker"/>`;
-        s += '<path d="M750 96l34 20v150l-34 6z" class="panel-door"/><text x="685" y="292" class="zap">⚡</text>';
-        s += '<rect x="440" y="372" width="80" height="40" class="hole"/><path d="M440 372h80v40h-80z" class="hole-edge"/>';
+        s += '<circle cx="520" cy="110" r="38" class="clock-r"/><circle cx="520" cy="110" r="34" class="clock"/>';
+        for (let k = 0; k < 12; k++) s += `<path d="M${520 + 28 * Math.sin((k * Math.PI) / 6)} ${110 - 28 * Math.cos((k * Math.PI) / 6)}l${3 * Math.sin((k * Math.PI) / 6)} ${-3 * Math.cos((k * Math.PI) / 6)}" class="hands"/>`;
+        s += '<path d="M520 110v-22M520 110l18 8" class="hands"/><text x="520" y="168" class="lbl">23:45</text>';
+        /* mesa de oficina y caja de herramientas (decorado) */
+        s += P.shadow(410, 331, 60) + '<rect x="356" y="262" width="110" height="10" rx="2" fill="url(#iaWood)"/><path d="M364 272v58M458 272v58" class="desk-leg"/><rect x="382" y="226" width="56" height="36" rx="3" class="mon"/><rect x="386" y="230" width="48" height="26" class="scr dark"/>';
+        s += P.shadow(180, 392, 34) + '<rect x="150" y="366" width="62" height="26" rx="3" class="toolbox"/><path d="M166 366v-8h30v8" class="tool-h"/><path d="M150 376h62" class="tool-l"/>';
+        s += '<circle cx="372" cy="414" r="18" class="spool"/><circle cx="372" cy="414" r="6" class="spool-c"/><path d="M386 424q30 14 52 -6" class="cable-b"/>';
+        s += P.shadow(688, 331, 70) + '<rect x="620" y="90" width="130" height="180" rx="3" class="panel"/><rect x="632" y="104" width="106" height="150" class="panel-in"/>';
+        for (let k = 0; k < 6; k++) s += `<rect x="${640 + (k % 3) * 32}" y="${116 + Math.floor(k / 3) * 46}" width="22" height="34" rx="2" class="breaker"/><rect x="${647 + (k % 3) * 32}" y="${122 + Math.floor(k / 3) * 46}" width="8" height="10" class="breaker-sw"/>`;
+        s += '<path d="M640 216h92M640 226h92M640 236h92" class="wires"/><path d="M750 96l34 20v150l-34 6z" class="panel-door"/><path d="M640 76l14 -10 14 10z" class="warn-tri"/><text x="654" y="74" class="warn-t">!</text><text x="685" y="292" class="zap">⚡</text>';
+        s += '<rect x="440" y="372" width="80" height="40" class="hole"/><path d="M440 372h80v40h-80z" class="hole-edge"/><rect x="524" y="396" width="60" height="12" rx="2" class="tile-up"/>';
         return s;
       },
       hz: [
@@ -222,14 +293,24 @@
       title: 'Teletrabajo en casa',
       intro: 'Día de teletrabajo. Tu casa también es tu lugar de trabajo, y la empresa debe evaluarlo.',
       art() {
-        let s = '<rect width="800" height="320" class="wall dim"/><rect y="320" width="800" height="130" class="floor2"/>';
-        s += '<rect x="620" y="50" width="140" height="130" class="win night"/><path d="M690 50v130" class="win-l"/><circle cx="720" cy="80" r="10" class="moon"/>';
-        s += '<rect x="60" y="250" width="300" height="80" rx="12" class="sofa"/><rect x="60" y="200" width="300" height="60" rx="16" class="sofa-b"/><rect x="40" y="230" width="40" height="100" rx="12" class="sofa-b"/><rect x="340" y="230" width="40" height="100" rx="12" class="sofa-b"/>';
-        s += `<g class="ppl"><circle cx="190" cy="196" r="11" class="skin"/><path d="M188 208q-6 30 14 58" class="limb" style="stroke:#8b5cf6"/><path d="M202 266l46 4l6 46" class="limb leg"/><path d="M192 226l40 18" class="limb" style="stroke:#8b5cf6"/></g>`;
-        s += '<path d="M222 252l44 -8l6 22l-44 8z" class="laptop"/><path d="M226 254l36 -6" class="scr"/>';
-        s += '<rect x="430" y="300" width="160" height="12" class="desk"/><path d="M440 312v60M580 312v60" class="desk-leg"/><rect x="480" y="270" width="34" height="30" rx="4" class="phone"/><rect x="456" y="210" width="120" height="50" rx="6" class="notif"/><text x="516" y="230" class="notif-t">23:12 · Jefe</text><text x="516" y="248" class="notif-t2">¿Reinicias el servidor YA?</text>';
-        s += '<path d="M780 340q-120 40 -260 20q-120 -14 -150 30" class="cable-o"/><rect x="772" y="328" width="18" height="26" class="socket"/>';
+        let s = DEFS + '<rect width="800" height="320" fill="url(#iaWallN)"/><rect y="320" width="800" height="130" class="floor2 dim"/>';
+        for (let y = 340; y < 450; y += 22) s += `<path d="M0 ${y}h800" class="plank dim"/>`;
+        s += '<rect y="316" width="800" height="6" class="skirt-w dim"/>';
+        s += '<rect x="612" y="42" width="156" height="146" rx="3" class="win-f"/><rect x="620" y="50" width="140" height="130" fill="url(#iaNight)" class="win"/><circle cx="720" cy="80" r="10" class="moon"/>';
+        for (let k = 0; k < 14; k++) s += `<circle cx="${630 + ((k * 53) % 125)}" cy="${60 + ((k * 31) % 60)}" r="1" class="star"/>`;
+        s += '<path d="M690 50v130" class="win-l"/><path d="M604 40q10 80 -2 160h22q-8 -80 2 -160z" class="curtain"/><path d="M776 40q-10 80 2 160h-22q8 -80 -2 -160z" class="curtain"/><rect x="598" y="36" width="184" height="6" rx="3" class="rod"/>';
+        s += '<rect x="90" y="60" width="96" height="70" rx="2" class="frame"/><rect x="96" y="66" width="84" height="58" class="frame-in"/><path d="M96 116l24 -24 18 16 14 -12 28 20" class="frame-art"/>';
+        s += '<rect x="216" y="70" width="56" height="44" rx="2" class="frame"/><rect x="221" y="75" width="46" height="34" class="frame-in b"/>';
+        s += '<ellipse cx="270" cy="400" rx="190" ry="34" class="rug"/><ellipse cx="270" cy="400" rx="160" ry="24" class="rug-in"/>';
+        s += P.shadow(210, 334, 190) + '<rect x="60" y="250" width="300" height="80" rx="12" class="sofa"/><rect x="60" y="200" width="300" height="60" rx="16" class="sofa-b"/><rect x="40" y="230" width="40" height="100" rx="12" class="sofa-b"/><rect x="340" y="230" width="40" height="100" rx="12" class="sofa-b"/><rect x="90" y="214" width="60" height="40" rx="10" class="cushion"/>';
+        s += `<g class="ppl"><path d="M202 266l46 4l6 46" class="trous"/><path d="M250 318h12" class="shoe"/><path d="M188 208q-6 30 14 58" class="arm" style="stroke:#8b5cf6;stroke-width:16"/><path d="M192 226l40 18" class="arm" style="stroke:#8b5cf6"/><circle cx="234" cy="245" r="3.6" class="hand"/><circle cx="190" cy="196" r="11" class="skin"/><path d="M179 194a11 11 0 0 1 22 -2q-6 -6 -13 -3q-5 1 -9 5z" class="hair"/></g>`;
+        s += '<path d="M222 252l44 -8l6 22l-44 8z" class="laptop"/><path d="M226 254l36 -6" class="scr"/><path d="M228 252l38 -7" class="laptop-glow"/>';
+        s += P.shadow(510, 374, 84) + '<rect x="430" y="300" width="160" height="12" rx="2" fill="url(#iaWood)" class="desk"/><path d="M440 312v60M580 312v60" class="desk-leg"/><rect x="480" y="270" width="34" height="30" rx="4" class="phone"/><rect x="484" y="274" width="26" height="20" rx="2" class="phone-scr"/>';
+        s += '<rect x="436" y="204" width="164" height="56" rx="8" class="notif"/><path d="M492 259l8 10 6 -10z" class="notif"/><circle cx="452" cy="220" r="6" class="notif-av"/><text x="524" y="225" class="notif-t">23:12 · Jefe</text><text x="518" y="248" class="notif-t2">¿Reinicias el servidor YA?</text>';
+        s += '<path d="M780 340q-120 40 -260 20q-120 -14 -150 30" class="cable-o"/><rect x="772" y="328" width="18" height="26" rx="2" class="socket"/>';
         s += '<path d="M410 120l-30 60h60z" class="lamp"/><path d="M410 180v130" class="desk-leg"/><circle cx="410" cy="190" r="40" class="glow"/>';
+        s += P.plant(28, 372);
+        s += '<rect width="800" height="450" fill="url(#iaDark)" class="vign"/>';
         return s;
       },
       hz: [
