@@ -807,83 +807,241 @@
     { t: 'Panel de la puerta', story: 'La puerta pregunta por el nivel de un riesgo con probabilidad alta y consecuencias extremadamente dañinas, el que obliga a parar el trabajo de inmediato.', q: 'Escribe el nivel de riesgo.', a: (v) => /^intolerable$/i.test(v.trim()), hint: 'Es el peor nivel de la matriz del INSST.', sol: 'Intolerable' },
     { t: 'La salida', story: 'Último candado: tres letras con el orden de actuación ante un accidente. Fuera te espera el punto de encuentro.', q: 'Las tres iniciales, en orden.', a: (v) => /^p\.?\s*a\.?\s*s\.?$/i.test(v.trim()), hint: 'Proteger, Avisar, Socorrer.', sol: 'PAS' },
   ];
+  /* ---------- escena animada del CPD (SVG): se pinta una vez y se actualiza por clases y variables CSS ---------- */
+  const ESC_TOTAL = 360; /* segundos */
+  const ESC_FALLO = 15;
+  const ESC_PISTA = 30;
+  /* dónde se para el personaje y dónde se marca el objetivo de cada candado */
+  const ESC_SPOT = [
+    { px: 222, tx: 212, ty: 196, tr: 40 }, /* extintor */
+    { px: 618, tx: 632, ty: 156, tr: 48 }, /* cuadro eléctrico */
+    { px: 700, tx: 726, ty: 238, tr: 30 }, /* teléfono */
+    { px: 735, tx: 738, ty: 158, tr: 36 }, /* caja fuerte */
+    { px: 172, tx: 166, ty: 214, tr: 24 }, /* panel de la puerta */
+    { px: 92, tx: 92, ty: 210, tr: 62 }, /* la puerta */
+  ];
+  function escScene() {
+    let s = '<svg class="esc-svg" viewBox="0 0 800 400" role="img" aria-label="El CPD: racks, el SAI ardiendo, la puerta con seis candados">';
+    s += '<defs><linearGradient id="escSmoke" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b3640" stop-opacity=".95"/><stop offset="1" stop-color="#5b5560" stop-opacity="0"/></linearGradient>' +
+      '<radialGradient id="escBeam" cx="0" cy="0.5" r="1"><stop offset="0" stop-color="#ff2b1a" stop-opacity=".55"/><stop offset="1" stop-color="#ff2b1a" stop-opacity="0"/></radialGradient>' +
+      '<radialGradient id="escGlow"><stop offset="0" stop-color="#ffb02e" stop-opacity=".55"/><stop offset="1" stop-color="#ffb02e" stop-opacity="0"/></radialGradient>' +
+      '<linearGradient id="escExit" x1="0" x2="1"><stop offset="0" stop-color="#7dffb0" stop-opacity=".9"/><stop offset="1" stop-color="#7dffb0" stop-opacity="0"/></linearGradient></defs>';
+    /* sala */
+    s += '<rect width="800" height="300" class="e-wall"/><rect y="300" width="800" height="100" class="e-floor"/>';
+    for (let x = 0; x <= 800; x += 50) s += `<path d="M${x} 300 L${400 + (x - 400) * 1.6} 400" class="e-tile"/>`;
+    s += '<path d="M0 330H800M0 362H800" class="e-tile"/><rect y="296" width="800" height="6" class="e-skirt"/>';
+    /* ventana con la calle (sirenas al llamar al 112) */
+    s += '<g class="e-window"><rect x="690" y="34" width="92" height="62" class="e-win"/><rect x="690" y="34" width="92" height="62" class="e-siren"/><path d="M736 34v62M690 65h92" class="e-frame"/></g>';
+    /* puerta de salida con seis candados */
+    s += '<rect x="44" y="96" width="96" height="18" rx="2" class="e-exit"/><text x="92" y="109" class="e-exit-t">SALIDA</text>';
+    s += '<rect x="34" y="118" width="116" height="182" class="e-doorframe"/><rect x="40" y="124" width="104" height="176" class="e-doorway"/><rect x="40" y="124" width="104" height="176" class="e-exitlight"/>';
+    s += '<g class="e-door"><rect x="40" y="124" width="104" height="176" class="e-doorleaf"/><rect x="52" y="138" width="80" height="60" class="e-doorpanel"/><rect x="118" y="214" width="18" height="6" rx="3" class="e-handle"/>';
+    for (let i = 0; i < 6; i++) s += `<g class="e-pad" data-pad="${i}" transform="translate(${62 + (i % 3) * 24} ${232 + Math.floor(i / 3) * 30})"><path d="M-6 0v-6a6 6 0 0 1 12 0v6" class="e-shackle"/><rect x="-8" y="0" width="16" height="13" rx="2" class="e-padbody"/></g>`;
+    s += '</g>';
+    /* teclado de la puerta */
+    s += '<g class="e-keypad"><rect x="156" y="196" width="22" height="36" rx="2" class="e-kp"/>';
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 2; c++) s += `<rect x="${160 + c * 8}" y="${208 + r * 7}" width="5" height="4" class="e-key"/>`;
+    s += '<circle cx="167" cy="202" r="2.6" class="e-kpled"/></g>';
+    /* caja del extintor */
+    s += '<g class="e-cabinet"><rect x="192" y="150" width="40" height="92" class="e-cab"/><rect x="198" y="158" width="28" height="76" class="e-glass"/><rect x="206" y="170" width="12" height="52" rx="5" class="e-ext"/><rect x="209" y="164" width="6" height="7" class="e-exthead"/><text x="212" y="148" class="e-tiny">CO₂</text></g>';
+    /* racks */
+    for (let r = 0; r < 3; r++) {
+      const x = 270 + r * 66;
+      s += `<rect x="${x}" y="92" width="58" height="208" class="e-rack"/>`;
+      for (let u = 0; u < 12; u++) {
+        s += `<rect x="${x + 5}" y="${100 + u * 16}" width="48" height="12" class="e-unit"/>`;
+        s += `<rect x="${x + 42}" y="${104 + u * 16}" width="4" height="4" class="e-led" style="animation-delay:-${((r * 12 + u) * 0.37) % 1.9}s"/>`;
+        s += `<rect x="${x + 34}" y="${104 + u * 16}" width="4" height="4" class="e-led g" style="animation-delay:-${((r * 7 + u) * 0.53) % 2.3}s"/>`;
+      }
+    }
+    /* SAI en llamas */
+    s += '<g class="e-ups"><rect x="490" y="226" width="78" height="74" class="e-upsbox"/><rect x="498" y="236" width="30" height="12" class="e-upslcd"/><circle cx="555" cy="242" r="3" class="e-upsled"/><text x="529" y="290" class="e-tiny d">SAI</text></g>';
+    s += '<g class="e-smokepuffs">' + [0, 1, 2, 3, 4, 5].map((i) => `<circle cx="${512 + (i % 3) * 16}" cy="226" r="${12 + (i % 2) * 6}" class="e-puff" style="animation-delay:-${i * 0.55}s"/>`).join('') + '</g>';
+    s += '<g class="e-fire"><ellipse cx="529" cy="222" rx="70" ry="40" fill="url(#escGlow)" class="e-glow"/>' +
+      '<path d="M500 228c-6-22 8-30 6-48 12 10 16 22 14 34 4-8 4-16 2-24 12 12 18 26 12 38Z" class="e-flame f1"/>' +
+      '<path d="M516 228c-8-28 10-40 8-62 14 14 20 30 16 46 6-8 8-18 6-28 12 16 16 32 6 44Z" class="e-flame f2"/>' +
+      '<path d="M532 228c-4-18 8-26 8-40 10 10 14 22 10 32 5-5 6-12 6-18 8 12 10 20 2 26Z" class="e-flame f3"/>' +
+      '<path d="M512 228c-2-12 6-18 6-28 8 8 10 18 6 28Z M532 228c-2-10 6-16 6-24 6 8 8 16 4 24Z" class="e-flame core"/></g>';
+    /* nube de CO2 al usar el extintor */
+    s += '<g class="e-co2">' + [0, 1, 2, 3, 4].map((i) => `<circle cx="${470 + i * 14}" cy="${214 - (i % 2) * 12}" r="${14 + i * 3}" class="e-cloud" style="animation-delay:${i * 0.12}s"/>`).join('') + '<rect x="452" y="238" width="12" height="40" rx="5" class="e-ext held"/><path d="M458 238q2-14 18-18" class="e-hose"/></g>';
+    /* cuadro eléctrico */
+    s += '<g class="e-panel"><rect x="602" y="112" width="60" height="88" class="e-pbox"/><path d="M632 124l-7 14h7l-6 14 12-18h-7l5-10Z" class="e-bolt"/><rect x="624" y="160" width="16" height="30" class="e-slot"/><rect x="626" y="162" width="12" height="12" class="e-lever"/></g>';
+    /* caja fuerte del plan de emergencia */
+    s += '<g class="e-safe"><rect x="708" y="128" width="62" height="58" class="e-safebox"/><rect x="714" y="134" width="50" height="46" class="e-safein"/><text x="739" y="164" class="e-key-g">🗝</text><g class="e-safedoor"><rect x="714" y="134" width="50" height="46" class="e-safefront"/><circle cx="739" cy="157" r="9" class="e-dial"/><path d="M739 150v7" class="e-dialmark"/></g></g>';
+    /* mesa y teléfono */
+    s += '<rect x="676" y="248" width="112" height="8" class="e-desk"/><path d="M684 256v44M780 256v44" class="e-deskleg"/><g class="e-phone"><rect x="712" y="234" width="30" height="14" rx="3" class="e-tel"/><path d="M710 234q17-12 34 0" class="e-handset"/></g>';
+    s += '<g class="e-call"><rect x="690" y="196" width="70" height="26" rx="4" class="e-bubble"/><path d="M712 222l6 8 4-8Z" class="e-bubble"/><text x="725" y="214" class="e-call-t">112 ☎</text></g>';
+    /* baliza de emergencia */
+    s += '<g class="e-beacon"><g class="e-beam"><path d="M400 22 L780 -40 L780 90Z" fill="url(#escBeam)"/><path d="M400 22 L20 -40 L20 90Z" fill="url(#escBeam)"/></g><rect x="388" y="4" width="24" height="10" class="e-bbase"/><path d="M390 14a10 10 0 0 1 20 0v8h-20Z" class="e-bdome"/></g>';
+    /* oscuridad al cortar la corriente y humo del techo */
+    s += '<rect width="800" height="400" class="e-dark"/>';
+    s += '<rect width="800" height="300" fill="url(#escSmoke)" class="e-smoke"/>';
+    /* objetivo actual */
+    s += '<circle class="e-target" r="40" cx="0" cy="0"/>';
+    /* el personaje (tú) */
+    s += '<g class="e-me"><g class="e-me-in"><circle cx="0" cy="-74" r="9" class="e-head"/><path d="M-9 -78q9-12 18 0Z" class="e-helmet"/><path d="M0 -64v30M0 -56l-12 14M0 -56l12 14M0 -34l-9 28M0 -34l9 28" class="e-body"/></g></g>';
+    s += '<text x="400" y="200" class="e-big" id="escBig"></text>';
+    return s + '</svg>';
+  }
+
   GAMES.escape = {
     title: 'Escape room: el CPD cerrado',
     icon: '🔐',
-    tag: 'Todo lo aprendido para salir de la sala',
+    tag: 'Cuenta atrás: sal del CPD antes de que el humo llene la sala',
     mount(root, api) {
-      let k;
-      let hints;
-      let errs;
-      let t0;
-      let timer;
-      let showHint;
+      let k = 0;
+      let hints = 0;
+      let errs = 0;
+      let endAt = 0;
+      let timer = null;
+      let showHint = false;
+      let state = 'intro'; /* intro · play · win · lose */
+      const best = () => api.store.get('best', null);
+      root.innerHTML =
+        '<div class="esc-top"><div class="esc-clock" id="escClock" aria-live="off"><span id="escT">6:00</span><small>hasta que el humo llene la sala</small><b class="esc-pen" id="escPen"></b></div>' +
+        `<div class="esc-locks" id="escLocks" aria-label="Candados">${CANDADOS.map((x, i) => `<i data-l="${i}" title="${esc(x.t)}">🔒</i>`).join('')}</div></div>` +
+        `<div class="esc-stage">${escScene()}</div><div id="escPanel"></div>`;
+      const svg = root.querySelector('.esc-svg');
+      const panel = root.querySelector('#escPanel');
+      const remaining = () => Math.max(0, (endAt - Date.now()) / 1000);
+      const fmt = (t) => {
+        const s = Math.ceil(t);
+        return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+      };
+      function sync() {
+        /* clases de estado según los candados abiertos */
+        svg.classList.toggle('playing', state === 'play');
+        svg.classList.toggle('fire-out', k >= 1);
+        svg.classList.toggle('no-power', k >= 2);
+        svg.classList.toggle('called', k >= 3);
+        svg.classList.toggle('safe-open', k >= 4);
+        svg.classList.toggle('door-ok', k >= 5);
+        svg.classList.toggle('door-open', k >= 6);
+        svg.classList.toggle('lost', state === 'lose');
+        svg.querySelectorAll('.e-pad').forEach((p, i) => p.classList.toggle('open', i < k));
+        root.querySelectorAll('#escLocks i').forEach((x, i) => {
+          x.textContent = i < k ? '🔓' : '🔒';
+          x.className = i < k ? 'open' : i === k && state === 'play' ? 'now' : '';
+        });
+        const spot = ESC_SPOT[Math.min(k, ESC_SPOT.length - 1)];
+        const me = svg.querySelector('.e-me');
+        const px = state === 'intro' ? 420 : k >= 6 ? 70 : spot.px;
+        me.style.transform = `translate(${px}px, 330px)`;
+        me.classList.toggle('gone', k >= 6);
+        const tg = svg.querySelector('.e-target');
+        tg.setAttribute('cx', spot.tx);
+        tg.setAttribute('cy', spot.ty);
+        tg.setAttribute('r', spot.tr);
+        tg.classList.toggle('on', state === 'play' && k < 6);
+        tick();
+      }
+      function tick() {
+        const t = state === 'play' ? remaining() : state === 'intro' ? ESC_TOTAL : remaining();
+        const frac = 1 - t / ESC_TOTAL; /* 0 al empezar, 1 sin tiempo */
+        const fire = state === 'intro' ? 0.55 : 0.7 + frac * 0.9;
+        const smoke = state === 'lose' ? 1 : (k >= 1 ? 0.8 : 1) * (0.12 + frac * 0.9);
+        svg.style.setProperty('--fire', fire.toFixed(3));
+        svg.style.setProperty('--smoke', smoke.toFixed(3));
+        svg.style.setProperty('--smokeh', (0.25 + frac * 0.75).toFixed(3));
+        root.querySelector('#escT').textContent = fmt(t);
+        const clock = root.querySelector('#escClock');
+        clock.classList.toggle('panic', state === 'play' && t <= 60);
+        clock.classList.toggle('warn', state === 'play' && t <= 150 && t > 60);
+        if (state === 'play' && t <= 0) lose();
+      }
+      function penalty(sec, why) {
+        endAt -= sec * 1000;
+        const p = root.querySelector('#escPen');
+        p.textContent = `−${sec} s`;
+        p.title = why;
+        p.classList.remove('show');
+        void p.offsetWidth;
+        p.classList.add('show');
+        tick();
+      }
       function start() {
         k = 0;
         hints = 0;
         errs = 0;
         showHint = false;
-        t0 = Date.now();
+        state = 'play';
+        endAt = Date.now() + ESC_TOTAL * 1000;
         clearInterval(timer);
-        timer = setInterval(tick, 1000);
-        draw();
-        api.say('¡Estás encerrado en el CPD! Resuelve los candados para salir.', '');
+        timer = setInterval(tick, 250);
+        svg.querySelector('#escBig').textContent = '';
+        sync();
+        drawPanel();
+        api.say('¡Cuenta atrás en marcha! Cada fallo resta 15 s y cada pista 30 s.', '');
       }
-      function tick() {
-        const el = root.querySelector('#escT');
-        if (!el) return;
-        const s = Math.floor((Date.now() - t0) / 1000);
-        el.textContent = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+      function lose() {
+        state = 'lose';
+        clearInterval(timer);
+        sync();
+        svg.querySelector('#escBig').textContent = 'SIN TIEMPO';
+        panel.innerHTML = `<div class="finish fail"><div class="big">💨</div><div><b>El humo ha llenado la sala</b><p>Los bomberos te sacan a tiempo, pero esto no se puede repetir en la vida real. Si hay humo: sal agachado (el aire limpio está abajo), toca las puertas antes de abrirlas, ciérralas al salir, nunca uses el ascensor y ve al punto de encuentro.</p><p>Has abierto ${k} de ${CANDADOS.length} candados.</p><button type="button" class="btn primary" data-start>↻ Intentarlo otra vez</button></div></div>`;
+        api.say('Se acabó el tiempo. ¡Repasa y vuelve a intentarlo!', 'oops');
       }
-      function draw() {
-        if (k >= CANDADOS.length) {
-          clearInterval(timer);
-          const s = Math.floor((Date.now() - t0) / 1000);
-          const score = Math.max(30, 100 - hints * 10 - errs * 5);
-          api.award('escape');
-          api.done(score, '¡Fuera del CPD! Y con todos a salvo en el punto de encuentro.');
-          root.innerHTML = `<div class="finish"><div class="big">🔓</div><div><b>¡Has escapado!</b><p>Tiempo: ${Math.floor(s / 60)} min ${s % 60} s · pistas: ${hints} · fallos: ${errs} · nota: ${score} %</p><button type="button" class="btn primary" data-start>Volver a jugar</button></div></div>`;
-          return;
-        }
+      function win() {
+        state = 'win';
+        clearInterval(timer);
+        const left = remaining();
+        sync();
+        const score = Math.min(100, Math.round(40 + (100 * left) / ESC_TOTAL));
+        const b = best();
+        if (b == null || left > b) api.store.set('best', Math.round(left));
+        api.award('escape');
+        api.done(score, '¡Fuera del CPD! Y con todos a salvo en el punto de encuentro.');
+        setTimeout(() => {
+          if (state === 'win') svg.querySelector('#escBig').textContent = '¡FUERA!';
+        }, 1400);
+        panel.innerHTML = `<div class="finish"><div class="big">🔓</div><div><b>¡Has escapado con ${fmt(left)} de margen!</b><p>Fallos: ${errs} · pistas: ${hints} · nota: ${score} %${b != null ? ` · tu mejor margen: ${fmt(Math.max(b, left))}` : ''}</p><p class="small">La nota depende del tiempo que te sobra: con 3:36 o más, 100 %.</p><button type="button" class="btn primary" data-start>Volver a jugar</button></div></div>`;
+      }
+      function drawPanel() {
         const c = CANDADOS[k];
-        root.innerHTML =
-          `<div class="esc-hud"><span>Candado <b>${k + 1}</b> de ${CANDADOS.length}</span><span>⏱ <b id="escT">0:00</b></span><span>Pistas: ${hints}</span></div>` +
-          `<div class="esc-locks">${CANDADOS.map((x, i) => `<i class="${i < k ? 'open' : i === k ? 'now' : ''}">${i < k ? '🔓' : '🔒'}</i>`).join('')}</div>` +
-          `<div class="esc-room"><h3>${esc(c.t)}</h3><p>${esc(c.story)}</p><label class="esc-in"><span>${esc(c.q)}</span><input type="text" id="escIn" autocomplete="off" spellcheck="false"></label>` +
-          `<div class="row-btns"><button type="button" class="btn primary" data-try>Probar</button><button type="button" class="btn" data-hint>Pista (−10)</button></div>${showHint ? `<p class="fb">💡 ${esc(c.hint)}</p>` : ''}<p class="fb bad" id="escMsg" hidden></p></div>`;
-        tick();
-        const inp = root.querySelector('#escIn');
-        if (inp) inp.focus();
+        panel.innerHTML =
+          `<div class="esc-room"><small class="esc-n">Candado ${k + 1} de ${CANDADOS.length}</small><h3>${esc(c.t)}</h3><p>${esc(c.story)}</p><label class="esc-in"><span>${esc(c.q)}</span><input type="text" id="escIn" autocomplete="off" spellcheck="false" autocapitalize="off"></label>` +
+          `<div class="row-btns"><button type="button" class="btn primary" data-try>Probar</button><button type="button" class="btn" data-hint${showHint ? ' disabled' : ''}>Pista (−${ESC_PISTA} s)</button></div>${showHint ? `<p class="fb">💡 ${esc(c.hint)}</p>` : ''}<p class="fb bad" id="escMsg" hidden></p></div>`;
+        const inp = panel.querySelector('#escIn');
+        if (inp && !window.matchMedia('(max-width: 900px)').matches) inp.focus();
       }
       function tryIt() {
-        const v = root.querySelector('#escIn').value;
+        if (state !== 'play') return;
+        const inp = panel.querySelector('#escIn');
+        const v = inp.value;
+        if (!v.trim()) return inp.focus();
         if (CANDADOS[k].a(v)) {
           k++;
           showHint = false;
-          api.say(k < CANDADOS.length ? '¡Clic! Candado abierto.' : '¡La puerta se abre!', 'happy');
-          draw();
+          if (k >= CANDADOS.length) return win();
+          sync();
+          drawPanel();
+          api.say(['¡Fuego apagado con CO₂! Ahora corta la corriente.', '¡Corriente cortada! Solo queda la luz de emergencia.', '¡Ayuda en camino! Se oyen las sirenas.', '¡La llave de la salida! Ahora el panel de la puerta.', '¡Panel en verde! Último candado.'][k - 1], 'happy');
         } else {
           errs++;
-          const m = root.querySelector('#escMsg');
+          penalty(ESC_FALLO, 'Fallo');
+          const m = panel.querySelector('#escMsg');
           m.hidden = false;
-          m.textContent = '✗ No se abre. Piensa en lo que has visto en las fichas.';
-          api.say('Nada. Prueba otra vez o pide una pista.', 'oops');
+          m.textContent = `✗ No se abre. −${ESC_FALLO} s. Piensa en lo que has visto en las fichas.`;
+          inp.select();
+          api.say('¡Nada! El humo sigue bajando…', 'oops');
         }
       }
       root.addEventListener('click', (e) => {
         if (e.target.closest('[data-start]')) return start();
         if (e.target.closest('[data-try]')) return tryIt();
-        if (e.target.closest('[data-hint]') && !showHint) {
+        if (e.target.closest('[data-hint]') && !showHint && state === 'play') {
           hints++;
           showHint = true;
-          draw();
+          penalty(ESC_PISTA, 'Pista');
+          drawPanel();
         }
       });
       root.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && e.target.id === 'escIn') tryIt();
       });
       api.onLeave(() => clearInterval(timer));
-      root.innerHTML = '<div class="esc-intro"><p class="lead">Viernes, 21:00. Has ido al CPD a revisar una alarma y la puerta se ha cerrado detrás de ti. El SAI empieza a echar humo. Para salir tendrás que usar todo lo que has aprendido: prevención, emergencias y derechos laborales.</p><button type="button" class="btn primary big" data-start>▶ Empezar</button></div>';
+      sync();
+      panel.innerHTML = `<div class="esc-intro"><p class="lead">Viernes, 21:00. Has ido al CPD a revisar una alarma y la puerta se ha cerrado detrás de ti. El SAI empieza a arder. Tienes <b>6 minutos</b> antes de que el humo llene la sala: abre los seis candados con lo que has aprendido.</p><p class="small">Cada fallo resta ${ESC_FALLO} s y cada pista ${ESC_PISTA} s.${best() != null ? ` Tu mejor margen: ${fmt(best())}.` : ''}</p><button type="button" class="btn primary big" data-start>▶ Empezar la cuenta atrás</button></div>`;
       api.say('El examen final, en forma de escape room. ¿Te atreves?', '');
     },
   };
