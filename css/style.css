@@ -3965,3 +3965,16 @@ body.ipe .ranks span { font: 700 15px/1.25 var(--sans); }
 .esc-svg.gas .e-puff { animation: none !important; opacity: 0 !important; }
 .esc-svg.gas .e-beam { opacity: 0; animation: none; }
 .esc-svg .e-big { font-size: 56px; }
+/* escape room: extintor más visible y que se queda tras usarlo */
+.esc-svg .e-sign { fill: #d0251b; stroke: #7a120c; stroke-width: 1; }
+.esc-svg .e-sign-p { fill: #fff; }
+.esc-svg .e-sign-h { stroke: #fff; stroke-width: 1.6; fill: none; }
+.esc-svg .e-cab { fill: #f1f3f5; stroke: #c63527; stroke-width: 3; }
+.esc-svg .e-glass { fill: #dfe7ee; opacity: 1; stroke: #aeb8c2; stroke-width: 1; }
+.esc-svg .e-ext { fill: #e0311f; stroke: #6d130a; stroke-width: 1.5; }
+.esc-svg .e-label { fill: #f6f6f6; opacity: .85; }
+.esc-svg.fire-out .e-cabinet .e-ext-in { opacity: 0; transition: opacity .3s; }
+.esc-svg.fire-out .e-cabinet .e-ext, .esc-svg.fire-out .e-cabinet .e-exthead { opacity: 1; }
+/* el extintor usado se queda en el suelo, junto al SAI; solo se va la nube */
+.esc-svg.fire-out .e-co2 { animation: none; opacity: 1; }
+.esc-svg .e-co2 .e-ext.held { stroke: #6d130a; }

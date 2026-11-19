@@ -861,7 +861,10 @@
     for (let r = 0; r < 3; r++) for (let c = 0; c < 2; c++) s += `<rect x="${160 + c * 8}" y="${208 + r * 7}" width="5" height="4" class="e-key"/>`;
     s += '<circle cx="167" cy="202" r="2.6" class="e-kpled"/></g>';
     /* caja del extintor */
-    s += '<g class="e-cabinet"><rect x="192" y="150" width="40" height="92" class="e-cab"/><rect x="198" y="158" width="28" height="76" class="e-glass"/><rect x="206" y="170" width="12" height="52" rx="5" class="e-ext"/><rect x="209" y="164" width="6" height="7" class="e-exthead"/></g>';
+    /* señal de extintor (lucha contra incendios: cuadrado rojo, dibujo blanco) y su armario */
+    s += '<g class="e-cabinet"><rect x="200" y="126" width="24" height="20" rx="2" class="e-sign"/><rect x="209" y="131" width="6" height="12" rx="2.5" class="e-sign-p"/><rect x="210" y="129" width="4" height="3" class="e-sign-p"/><path d="M214 131q5 0 5 5" class="e-sign-h"/>' +
+      '<rect x="190" y="150" width="44" height="94" rx="3" class="e-cab"/><rect x="196" y="156" width="32" height="82" rx="2" class="e-glass"/>' +
+      '<g class="e-ext-in"><rect x="205" y="172" width="14" height="56" rx="6" class="e-ext"/><rect x="208" y="165" width="8" height="8" class="e-exthead"/><path d="M216 168q9 2 7 16" class="e-hose"/><rect x="205" y="196" width="14" height="10" class="e-label"/></g></g>';
     /* racks */
     for (let r = 0; r < 3; r++) {
       const x = 270 + r * 66;
@@ -885,7 +888,7 @@
     /* resplandor naranja que crece con el fuego */
     s += '<rect width="800" height="400" class="e-heat"/>';
     /* nube de CO2 al usar el extintor */
-    s += '<g class="e-co2">' + [0, 1, 2, 3, 4].map((i) => `<circle cx="${470 + i * 14}" cy="${214 - (i % 2) * 12}" r="${14 + i * 3}" class="e-cloud" style="animation-delay:${i * 0.12}s"/>`).join('') + '<rect x="452" y="238" width="12" height="40" rx="5" class="e-ext held"/><path d="M458 238q2-14 18-18" class="e-hose"/></g>';
+    s += '<g class="e-co2">' + [0, 1, 2, 3, 4].map((i) => `<circle cx="${470 + i * 14}" cy="${214 - (i % 2) * 12}" r="${14 + i * 3}" class="e-cloud" style="animation-delay:${i * 0.12}s"/>`).join('') + '<rect x="456" y="257" width="14" height="42" rx="6" class="e-ext held"/><rect x="459" y="250" width="8" height="8" class="e-exthead"/><path d="M466 253q12-6 20-20" class="e-hose"/></g>';
     /* cuadro eléctrico */
     s += '<g class="e-panel"><rect x="602" y="112" width="60" height="88" class="e-pbox"/><path d="M632 124l-7 14h7l-6 14 12-18h-7l5-10Z" class="e-bolt"/><rect x="624" y="160" width="16" height="30" class="e-slot"/><rect x="626" y="162" width="12" height="12" class="e-lever"/></g>';
     /* caja fuerte del plan de emergencia */
