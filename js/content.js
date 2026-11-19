@@ -113,25 +113,62 @@
         <h3>Pantallas de visualización (RD 488/1997)</h3>
         <p>Silla regulable con apoyo lumbar, borde superior de la pantalla a la altura de los ojos o algo por debajo, pantalla a unos
         40 cm o más, sin reflejos de ventanas, pies apoyados y <b>pausas</b> o cambios de actividad.</p>
-        <h3>Señales</h3>
-        <div class="cards">
-          <div><code>Prohibición</code><small>círculo rojo con banda</small></div>
-          <div><code>Advertencia</code><small>triángulo amarillo, borde negro</small></div>
-          <div><code>Obligación</code><small>círculo azul</small></div>
-          <div><code>Salvamento</code><small>rectángulo verde (salidas, primeros auxilios)</small></div>
-          <div><code>Contra incendios</code><small>rectángulo rojo (extintor, pulsador)</small></div>
-        </div>`,
+        <p>Cuando un riesgo no se puede eliminar del todo, además se <b>señaliza</b>: lo verás en la unidad siguiente.</p>`,
         quiz: [
           { q: 'Probabilidad media y consecuencias extremadamente dañinas dan un riesgo…', opts: ['Moderado', 'Importante', 'Intolerable'], a: 1, why: 'En la matriz, media × extremadamente dañino = importante: no se empieza el trabajo hasta reducirlo.' },
           { q: 'Para el ruido del CPD, ¿qué medida va primero?', opts: ['Dar tapones a todo el mundo', 'Aislar o separar los equipos ruidosos', 'Poner una señal de ruido'], a: 1, why: 'Primero se actúa en el origen o con protección colectiva; el EPI (tapones) es el último recurso.' },
-          { q: 'Una señal redonda azul con un dibujo blanco indica…', opts: ['Prohibición', 'Obligación', 'Advertencia'], a: 1, why: 'Círculo azul = obligación (por ejemplo, «uso obligatorio de guantes»).' },
+          { q: 'Trabajas 8 horas con el portátil en la mesa de la cocina. ¿Qué falla según la norma de pantallas?', opts: ['Nada, si la wifi va bien', 'La altura de la pantalla y la silla, y faltan pausas', 'Solo que el portátil es pequeño'], a: 1, why: 'RD 488/1997: pantalla a la altura de los ojos o algo por debajo, silla regulable y pausas o cambios de actividad.' },
         ],
       },
       games: ['matriz'],
     },
     {
-      id: 'u4',
+      id: 'us',
       n: 4,
+      title: 'Señalización de seguridad',
+      short: 'Señales de seguridad',
+      icon: '🚸',
+      ficha: {
+        body: `
+        <p>La <b>señalización de seguridad</b> (RD 485/1997) avisa de un riesgo, prohíbe o exige un comportamiento, o indica dónde
+        está una salida o un equipo de emergencia. Es obligatoria cuando un riesgo no se ha podido eliminar del todo, pero
+        <b>no sustituye</b> a las medidas de prevención: las complementa.</p>
+        <p>Cada tipo tiene su <b>forma</b> y su <b>color</b>, para que se entienda de un vistazo y en cualquier idioma.</p>
+        <h3>Forma y color</h3>
+        <table class="t signs-t"><thead><tr><th>Tipo</th><th>Forma</th><th>Colores</th><th>Ejemplo en un CPD</th></tr></thead><tbody>
+          <tr><td><b>Prohibición</b></td><td>Círculo con banda diagonal</td><td>Borde y banda <b>rojos</b>, fondo blanco, dibujo negro</td><td>Prohibido fumar · Prohibido apagar con agua</td></tr>
+          <tr><td><b>Advertencia</b></td><td>Triángulo</td><td>Fondo <b>amarillo</b>, borde y dibujo negros</td><td>Riesgo eléctrico en el cuadro y el SAI</td></tr>
+          <tr><td><b>Obligación</b></td><td>Círculo</td><td>Fondo <b>azul</b>, dibujo blanco</td><td>Protección auditiva en la sala de máquinas</td></tr>
+          <tr><td><b>Salvamento o socorro</b></td><td>Rectángulo o cuadrado</td><td>Fondo <b>verde</b>, dibujo blanco</td><td>Salida de emergencia · Primeros auxilios</td></tr>
+          <tr><td><b>Lucha contra incendios</b></td><td>Rectángulo o cuadrado</td><td>Fondo <b>rojo</b>, dibujo blanco</td><td>Extintor · Pulsador de alarma</td></tr>
+        </tbody></table>
+        <div class="sign-row" data-signs="fumar electrico auditiva salida extintor"></div>
+        <h3>Los colores de seguridad</h3>
+        <div class="cards">
+          <div><code>Rojo</code><small>prohibición, peligro y alarma, material contra incendios</small></div>
+          <div><code>Amarillo</code><small>advertencia, atención, precaución</small></div>
+          <div><code>Azul</code><small>obligación: un comportamiento o un EPI</small></div>
+          <div><code>Verde</code><small>salvamento: salidas, primeros auxilios, situación de seguridad</small></div>
+        </div>
+        <p>Las <b>franjas amarillas y negras</b> (o rojas y blancas) a 45° marcan obstáculos y zonas con riesgo de caída o de golpes,
+        como un hueco del falso suelo abierto.</p>
+        <h3>No solo carteles</h3>
+        <p>También hay señalización <b>luminosa</b> y <b>acústica</b> (la alarma de incendios o la de extinción automática por gas del CPD),
+        <b>verbal</b> y <b>gestual</b>. En un CPD con extinción por gas, la señal de «evacuar al sonar la alarma» es vital: el gas
+        desplaza el oxígeno.</p>
+        <p class="note">Las señales tienen que verse bien, estar iluminadas, en buen estado y en el sitio del riesgo. Una salida
+        señalizada pero bloqueada por cajas no sirve de nada.</p>`,
+        quiz: [
+          { q: 'Una señal triangular, amarilla y con borde negro indica…', opts: ['Una obligación', 'Una advertencia de peligro', 'Un equipo contra incendios'], a: 1, why: 'Triángulo amarillo con borde negro = advertencia (riesgo eléctrico, materias inflamables, caídas…).' },
+          { q: 'La señal de «salida de emergencia» es…', opts: ['Un rectángulo verde con dibujo blanco', 'Un rectángulo rojo con dibujo blanco', 'Un círculo azul'], a: 0, why: 'Salvamento o socorro: rectángulo o cuadrado verde. El rojo cuadrado es para material contra incendios.' },
+          { q: 'Si una zona del CPD está bien señalizada, ¿ya no hace falta proteger a nadie?', opts: ['Correcto: la señal basta', 'No: la señalización complementa a las medidas, no las sustituye', 'Solo si la señal es luminosa'], a: 1, why: 'La señalización avisa del riesgo que queda; primero hay que eliminarlo o reducirlo con medidas colectivas.' },
+        ],
+      },
+      games: ['senales'],
+    },
+    {
+      id: 'u4',
+      n: 5,
       title: 'Gestión de la prevención y emergencias',
       short: 'Emergencias y primeros auxilios',
       icon: '🚑',
@@ -172,7 +209,7 @@
     },
     {
       id: 'u5',
-      n: 5,
+      n: 6,
       title: 'El contrato de trabajo',
       short: 'Contratos',
       icon: '📜',
@@ -213,7 +250,7 @@
     },
     {
       id: 'u6',
-      n: 6,
+      n: 7,
       title: 'Jornada, descansos y permisos',
       short: 'Tiempo de trabajo',
       icon: '🗓️',
@@ -250,7 +287,7 @@
     },
     {
       id: 'u7',
-      n: 7,
+      n: 8,
       title: 'El salario, la nómina y la Seguridad Social',
       short: 'Nómina',
       icon: '💶',
@@ -296,7 +333,7 @@
     },
     {
       id: 'u8',
-      n: 8,
+      n: 9,
       title: 'Cambios y fin del contrato',
       short: 'Despido y finiquito',
       icon: '🧮',
@@ -332,7 +369,7 @@
     },
     {
       id: 'u9',
-      n: 9,
+      n: 10,
       title: 'Mi proyecto profesional',
       short: 'Autoconocimiento y empleabilidad',
       icon: '🗺️',
@@ -374,6 +411,10 @@
     ['In itinere', 'Accidente al ir o volver del trabajo por el trayecto habitual. Es accidente de trabajo.'],
     ['Enfermedad profesional', 'La contraída por el trabajo en actividades del cuadro oficial (RD 1299/2006).'],
     ['Peligro', 'Fuente o situación que puede causar daño.'],
+    ['Señalización de seguridad', 'Indicación (cartel, color, luz, sonido, gesto o palabra) sobre un riesgo o sobre una obligación o prohibición, o que localiza salidas y equipos de emergencia (RD 485/1997). Complementa a la prevención, no la sustituye.'],
+    ['Señal de advertencia', 'Triángulo amarillo con borde y dibujo negros: avisa de un peligro (riesgo eléctrico, materias inflamables…).'],
+    ['Señal de obligación', 'Círculo azul con dibujo blanco: obliga a un comportamiento o a usar un EPI.'],
+    ['Señal de salvamento', 'Rectángulo o cuadrado verde con dibujo blanco: salidas de emergencia, primeros auxilios.'],
     ['Riesgo laboral', 'Posibilidad de que un trabajador sufra un daño derivado del trabajo.'],
     ['Evaluación de riesgos', 'Identificar peligros, estimar probabilidad y gravedad y valorar el riesgo para decidir medidas.'],
     ['EPI', 'Equipo de protección individual. Último recurso tras eliminar el riesgo y la protección colectiva.'],

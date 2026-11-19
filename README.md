@@ -11,7 +11,7 @@ no necesita instalación, servidor ni Internet.
 
 ## Qué tiene
 
-Nueve unidades, cada una con su **ficha** de teoría corta (con ejemplos de un técnico de sistemas)
+Diez unidades, cada una con su **ficha** de teoría corta (con ejemplos de un técnico de sistemas)
 y un **minitest**, y un **juego** distinto:
 
 | Unidad | Juego |
@@ -19,12 +19,13 @@ y un **minitest**, y un **juego** distinto:
 | 1 · Mi sector: el técnico ASIR | 🧭 **Brújula profesional**: qué perfil IT encaja contigo (sistemas, redes, ciberseguridad, soporte, cloud, datos) |
 | 2 · Prevención: conceptos básicos | 🔍 **Inspector PRL**: caza los peligros en un CPD, una oficina de soporte, una instalación en cliente y el teletrabajo; clasifícalos y elige la medida |
 | 3 · Evaluar y prevenir los riesgos | 🎯 **Matriz de riesgos**: probabilidad × consecuencias (método INSST) y orden de actuación |
-| 4 · Gestión de la prevención y emergencias | 🚑 **Emergencia**: decisiones Proteger-Avisar-Socorrer en cuatro casos (electrocución, fuego en el SAI, caída, corte) |
-| 5 · El contrato de trabajo | 📜 **¿Qué contrato es?**: modalidades tras la reforma de 2021 |
-| 6 · Jornada, descansos y permisos | 🗓️ **El cuadrante**: monta turnos legales para cubrir el CPD · ⚖️ **¿Legal o ilegal?** |
-| 7 · Salario, nómina y Seguridad Social | 💶 **Tu nómina**: rellena bases, cotizaciones, IRPF y líquido |
-| 8 · Cambios y fin del contrato | 🧮 **Fin de contrato**: indemnización y finiquito |
-| 9 · Mi proyecto profesional | 🗺️ **Mi DAFO y hoja de ruta**: DAFO personal, objetivos SMART y descarga de la hoja de ruta |
+| 4 · Señalización de seguridad | 🚸 **Señales de seguridad**: 17 señales reglamentarias dibujadas (RD 485/1997): di qué tipo son y qué significan, o elige la que pondrías en cada sitio del CPD |
+| 5 · Gestión de la prevención y emergencias | 🚑 **Emergencia**: decisiones Proteger-Avisar-Socorrer en cuatro casos (electrocución, fuego en el SAI, caída, corte) |
+| 6 · El contrato de trabajo | 📜 **¿Qué contrato es?**: modalidades tras la reforma de 2021 |
+| 7 · Jornada, descansos y permisos | 🗓️ **El cuadrante**: monta turnos legales para cubrir el CPD · ⚖️ **¿Legal o ilegal?** |
+| 8 · Salario, nómina y Seguridad Social | 💶 **Tu nómina**: rellena bases, cotizaciones, IRPF y líquido |
+| 9 · Cambios y fin del contrato | 🧮 **Fin de contrato**: indemnización y finiquito |
+| 10 · Mi proyecto profesional | 🗺️ **Mi DAFO y hoja de ruta**: DAFO personal, objetivos SMART y descarga de la hoja de ruta |
 | Final | 🔐 **Escape room: el CPD cerrado**: cuenta atrás de 2:30 con la sala animada (el fuego se propaga, humo, baliza, sirenas) |
 
 Más: puntos, 8 rangos, 16 logros con forma de acreditación (Recurso preventivo, Delegado de prevención…), botón ↻ Reiniciar en cada juego, glosario, tema claro y oscuro, y Previ, la mascota con casco.

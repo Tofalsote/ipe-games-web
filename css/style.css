@@ -3905,3 +3905,49 @@ body.ipe .ranks span { font: 700 15px/1.25 var(--sans); }
   .esc-stage .esc-locks { font-size: 14px; }
   .esc-row .btn { flex: 1; }
 }
+
+/* ---- señales de seguridad ---- */
+.sign-row { display: flex; flex-wrap: wrap; gap: 14px; margin: 12px 0; }
+.sign-row figure { margin: 0; display: grid; justify-items: center; gap: 4px; width: 96px; text-align: center; }
+.sign-row figcaption { font-size: 12px; line-height: 1.25; color: var(--muted); }
+.sign { display: block; filter: drop-shadow(2px 2px 0 rgba(23, 20, 31, .25)); }
+.sg-hud { display: flex; justify-content: space-between; font: 14px var(--mono); }
+.sg-bar { height: 6px; background: var(--soft); margin: 6px 0 14px; } .sg-bar i { display: block; height: 100%; background: var(--red); }
+.sg-card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 22px; align-items: start; padding: 18px; border: var(--b); background: var(--paper); }
+.sg-card.poner { grid-template-columns: 1fr; }
+.sg-big { padding: 14px; background: #fff; border: 1.5px solid color-mix(in srgb, var(--ink) 25%, transparent); }
+.sg-ask { font-size: 18px; margin: 0 0 10px; }
+.sg-tag { display: inline-block; margin: 0 0 8px; padding: 3px 8px; font: 700 11px var(--mono); text-transform: uppercase; letter-spacing: .06em; background: var(--yellow); color: #17141f; }
+.sg-tipos { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
+.sg-sit { font: 19px/1.45 var(--serif); margin: 0 0 14px; }
+.sg-pick { display: flex; flex-wrap: wrap; gap: 14px; }
+.sg-opt { display: grid; justify-items: center; gap: 6px; padding: 12px; border: var(--b); background: #fff; color: #17141f; cursor: pointer; box-shadow: var(--sh-s); min-width: 124px; }
+.sg-opt:hover:not([disabled]) { transform: translate(-1px, -1px); background: #fffbe8; }
+.sg-opt.ok { background: var(--green-soft); outline: 3px solid var(--green); }
+.sg-opt.bad { background: var(--bad-soft); outline: 3px solid var(--red); }
+.sg-opt small { font-size: 12px; max-width: 120px; text-align: center; }
+.sg-card .fb { margin-top: 12px; }
+.signs-t td { vertical-align: top; }
+@media (max-width: 700px) {
+  .sg-card { grid-template-columns: 1fr; justify-items: center; padding: 12px; }
+  .sg-card .sg-q { width: 100%; }
+  .sg-big svg { width: 130px; height: 130px; }
+  .sg-pick { justify-content: center; gap: 8px; }
+  .sg-opt { min-width: 0; padding: 8px; }
+  .sg-opt svg { width: 76px; height: 76px; }
+}
+/* escape room: compañero desmayado y señal de salida */
+.esc-svg .e-mate-down, .esc-svg .e-mate-up { opacity: 0; transition: opacity .6s; }
+.esc-svg.called .e-mate-down { opacity: 1; }
+.esc-svg.mate-ok .e-mate-down { opacity: 0; }
+.esc-svg.mate-ok .e-mate-up { opacity: 1; }
+.esc-svg.door-open .e-mate-up { opacity: 0; transition-delay: .6s; }
+.esc-svg .e-ok { font: 700 13px var(--mono); fill: #fff; stroke: #17141f; stroke-width: 3; paint-order: stroke; }
+.esc-svg .e-exitglow { fill: none; stroke: #7dffb0; stroke-width: 0; opacity: 0; transition: opacity .6s; }
+.esc-svg.no-power .e-exit { fill: #23342a; transition: fill .4s; }
+.esc-svg.no-power .e-exit-t { fill: #4b5d52; }
+.esc-svg.sign-on .e-exit { fill: #19c46a; }
+.esc-svg.sign-on .e-exit-t { fill: #fff; }
+.esc-svg.sign-on .e-exitglow { opacity: 1; stroke-width: 6; stroke-opacity: .5; filter: drop-shadow(0 0 8px #7dffb0); animation: escGlow .8s ease-in-out infinite alternate; }
+.esc-stage .esc-locks { font-size: 18px; gap: 2px; }
+@media (max-width: 900px) { .esc-stage .esc-locks { font-size: 12px; } }

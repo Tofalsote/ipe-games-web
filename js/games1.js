@@ -74,10 +74,10 @@
           '<h3 class="h3">Tu brújula</h3><div class="bars">' +
           list.map((x) => `<div class="barrow"><span>${esc(PERFILES[x.k].n)}</span><i class="bar"><i style="width:${x.p}%"></i></i><b>${x.p}%</b></div>`).join('') +
           `</div><div class="finish"><div class="big">🧭</div><div><b>${esc(top.n)}</b><p>${esc(top.d)}</p><p><b>Puestos:</b> ${esc(top.puestos)}<br><b>Certificaciones:</b> ${esc(top.cert)}<br><b>Módulos del ciclo que más te van a gustar:</b> ${esc(top.mod)}</p>` +
-          '<p class="note">Úsalo en tu DAFO (unidad 9): tus intereses son una fortaleza si los conviertes en objetivos.</p></div></div>';
+          '<p class="note">Úsalo en tu DAFO (unidad 10): tus intereses son una fortaleza si los conviertes en objetivos.</p></div></div>';
         api.store.set('top', list[0].k);
         api.award('brujula');
-        api.done(100, `Tu perfil más fuerte: ${top.n}. Anótalo para la unidad 9.`);
+        api.done(100, `Tu perfil más fuerte: ${top.n}. Anótalo para la unidad 10.`);
       }
       function $(s) {
         return root.querySelector(s);
@@ -609,6 +609,181 @@
       });
       menu();
       api.say('En una emergencia el orden lo es todo: Proteger, Avisar y Socorrer.', '');
+    },
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* =====================================================================
+   4 · SEÑALES DE SEGURIDAD (RD 485/1997): señales dibujadas en SVG
+   ===================================================================== */
+(function (G) {
+  'use strict';
+  const GAMES = (G.IPE_GAMES = G.IPE_GAMES || {});
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const shuffle = (a) => {
+    a = a.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  };
+  /* pictogramas en una caja de 100 × 100, con el color que toque */
+  const PICT = {
+    fumar: (c) => `<rect x="16" y="50" width="54" height="11" fill="${c}"/><rect x="72" y="50" width="11" height="11" fill="${c}" opacity=".55"/><path d="M78 44q-7-8 0-14t0-14" stroke="${c}" stroke-width="4" fill="none" stroke-linecap="round"/>`,
+    agua: (c) => `<path d="M34 84c-11-15 3-24 0-38 11 9 16 20 13 31 5-7 5-12 3-19 9 9 11 21 4 26Z" fill="${c}"/><path d="M66 18c-9 13-13 20-13 27a13 13 0 0 0 26 0c0-7-4-14-13-27Z" fill="${c}"/>`,
+    movil: (c) => `<rect x="36" y="18" width="28" height="56" rx="5" fill="${c}"/><rect x="40" y="26" width="20" height="36" fill="#fff" opacity=".9"/><circle cx="50" cy="68" r="2.6" fill="#fff"/>`,
+    electrico: (c) => `<path d="M56 30 39 60h11l-7 22 19-30H51l6-22Z" fill="${c}"/>`,
+    inflamable: (c) => `<path d="M50 32c5 11 16 17 13 32a13 13 0 0 1-26 0c0-8 4-12 7-17 2 6 4 8 6 8-3-8 0-15 0-23Z" fill="${c}"/><rect x="34" y="78" width="32" height="5" fill="${c}"/>`,
+    caida: (c) => `<path d="M26 82h16V70h14V58h18" stroke="${c}" stroke-width="5" fill="none"/><circle cx="40" cy="42" r="5" fill="${c}"/><path d="M43 47l9 10m-4-6 9-4m-5 10-6 8m6-8 9 4" stroke="${c}" stroke-width="4" stroke-linecap="round" fill="none"/>`,
+    general: (c) => `<rect x="45" y="38" width="10" height="28" rx="3" fill="${c}"/><circle cx="50" cy="74" r="5.5" fill="${c}"/>`,
+    gas: (c) => `<rect x="38" y="40" width="24" height="40" rx="9" fill="${c}"/><rect x="45" y="32" width="10" height="9" fill="${c}"/><path d="M60 52q8-4 4-12m4 22q10-4 6-16" stroke="${c}" stroke-width="3" fill="none" stroke-linecap="round"/>`,
+    auditiva: (c) => `<circle cx="50" cy="52" r="15" fill="${c}"/><path d="M27 88q23-22 46 0Z" fill="${c}"/><path d="M24 50a26 26 0 0 1 52 0" stroke="${c}" stroke-width="5" fill="none"/><rect x="17" y="42" width="13" height="24" rx="5" fill="${c}"/><rect x="70" y="42" width="13" height="24" rx="5" fill="${c}"/><path d="M30 54h4M66 54h4" stroke="${c}" stroke-width="3"/>`,
+    guantes: (c) => `<rect x="34" y="44" width="30" height="36" rx="9" fill="${c}"/><rect x="34" y="22" width="7" height="28" rx="3.5" fill="${c}"/><rect x="42.5" y="18" width="7" height="30" rx="3.5" fill="${c}"/><rect x="51" y="20" width="7" height="28" rx="3.5" fill="${c}"/><rect x="59" y="26" width="6" height="24" rx="3" fill="${c}"/><rect x="62" y="48" width="18" height="8" rx="4" transform="rotate(-38 62 52)" fill="${c}"/>`,
+    calzado: (c) => `<path d="M32 20h20v36l24 6q8 2 8 10v10H28V56Z" fill="${c}"/>`,
+    casco: (c) => `<path d="M28 42a22 22 0 0 1 44 0Z" fill="${c}"/><rect x="22" y="40" width="56" height="7" rx="3" fill="${c}"/><circle cx="50" cy="60" r="12" fill="${c}"/><path d="M28 92q22-22 44 0Z" fill="${c}"/>`,
+    salida: (c) => `<rect x="60" y="16" width="24" height="68" stroke="${c}" stroke-width="4" fill="none"/><circle cx="38" cy="26" r="6.5" fill="${c}"/><path d="M36 35l-6 18-12 6m12-6 11 10-4 17m-1-39 12 7 6-7m-17 0-10 5" stroke="${c}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`,
+    auxilios: (c) => `<path d="M41 18h18v23h23v18H59v23H41V59H18V41h23Z" fill="${c}"/>`,
+    lavaojos: (c) => `<path d="M18 52q32-26 64 0-32 26-64 0Z" fill="none" stroke="${c}" stroke-width="5"/><circle cx="50" cy="52" r="9" fill="${c}"/><path d="M40 18v10m10-12v12m10-10v10" stroke="${c}" stroke-width="4" stroke-linecap="round"/>`,
+    extintor: (c) => `<rect x="38" y="36" width="24" height="50" rx="9" fill="${c}"/><rect x="43" y="26" width="13" height="11" fill="${c}"/><path d="M55 30q18-2 20 18" stroke="${c}" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M30 26h16" stroke="${c}" stroke-width="4" stroke-linecap="round"/>`,
+    pulsador: (c) => `<path d="M50 20c-14 0-20 12-20 26v14l-6 8h52l-6-8V46c0-14-6-26-20-26Z" fill="${c}"/><circle cx="50" cy="76" r="5" fill="${c}"/>`,
+  };
+  const TIPOS = {
+    prohibicion: { n: 'Prohibición', why: 'círculo con borde y banda rojos' },
+    advertencia: { n: 'Advertencia', why: 'triángulo amarillo con borde negro' },
+    obligacion: { n: 'Obligación', why: 'círculo azul con dibujo blanco' },
+    salvamento: { n: 'Salvamento o socorro', why: 'rectángulo verde con dibujo blanco' },
+    incendios: { n: 'Lucha contra incendios', why: 'rectángulo rojo con dibujo blanco' },
+  };
+  const SENALES = [
+    { id: 'fumar', tipo: 'prohibicion', n: 'Prohibido fumar', sit: 'En el CPD hay cajas de cartón, cables y mucho aire forzado. Alguien quiere echarse un cigarro junto a los racks.' },
+    { id: 'agua', tipo: 'prohibicion', n: 'Prohibido apagar con agua', sit: 'Junto al SAI y los racks con tensión, ¿qué señal evita que alguien coja un cubo de agua si hay fuego?' },
+    { id: 'movil', tipo: 'prohibicion', n: 'Prohibido usar el teléfono móvil', sit: 'En la zona de baterías con gases se prohíben los aparatos que puedan dar chispa, como el móvil.' },
+    { id: 'electrico', tipo: 'advertencia', n: 'Riesgo eléctrico', sit: 'En la puerta del cuadro eléctrico y en el armario del SAI hay partes con tensión.' },
+    { id: 'inflamable', tipo: 'advertencia', n: 'Materias inflamables', sit: 'El almacén donde se guardan los disolventes de limpieza y el embalaje.' },
+    { id: 'caida', tipo: 'advertencia', n: 'Caída a distinto nivel', sit: 'Han levantado varias baldosas del falso suelo para pasar cable y queda un hueco.' },
+    { id: 'general', tipo: 'advertencia', n: 'Peligro en general', sit: 'Un peligro que no tiene dibujo propio: se pone el triángulo con la exclamación y un texto debajo.' },
+    { id: 'gas', tipo: 'advertencia', n: 'Extinción automática por gas', sit: 'El CPD tiene un sistema que inunda la sala de gas para apagar el fuego: al sonar la alarma hay que salir.' },
+    { id: 'auditiva', tipo: 'obligacion', n: 'Protección auditiva obligatoria', sit: 'La sala de máquinas con la climatización y los grupos electrógenos supera los 87 dB.' },
+    { id: 'guantes', tipo: 'obligacion', n: 'Protección obligatoria de las manos', sit: 'Para manipular baterías del SAI y bordes cortantes de las bandejas del rack.' },
+    { id: 'calzado', tipo: 'obligacion', n: 'Calzado de seguridad obligatorio', sit: 'Muelle de carga donde se descargan servidores de 30 kg.' },
+    { id: 'casco', tipo: 'obligacion', n: 'Casco de protección obligatorio', sit: 'Instalación de cableado en una obra con andamios y cargas en altura.' },
+    { id: 'salida', tipo: 'salvamento', n: 'Salida de emergencia', sit: 'Encima de la puerta por la que hay que evacuar el CPD.' },
+    { id: 'auxilios', tipo: 'salvamento', n: 'Primeros auxilios', sit: 'Indica dónde está el botiquín de la planta.' },
+    { id: 'lavaojos', tipo: 'salvamento', n: 'Lavaojos de emergencia', sit: 'Junto a la sala de baterías, por si salpica el electrolito a los ojos.' },
+    { id: 'extintor', tipo: 'incendios', n: 'Extintor', sit: 'Indica dónde está el extintor de CO₂ del CPD.' },
+    { id: 'pulsador', tipo: 'incendios', n: 'Pulsador de alarma de incendios', sit: 'Indica dónde está el botón para dar la alarma de incendio.' },
+  ];
+  /* dibuja una señal reglamentaria */
+  function signSvg(id, size) {
+    const sg = SENALES.find((x) => x.id === id);
+    const t = sg.tipo;
+    let h = `<svg class="sign" viewBox="0 0 100 100" width="${size || 120}" height="${size || 120}" role="img" aria-label="Señal">`;
+    if (t === 'prohibicion') h += `<circle cx="50" cy="50" r="43" fill="#fff" stroke="#d0251b" stroke-width="9"/><g transform="translate(50 50) scale(.72) translate(-50 -50)">${PICT[id]('#111')}</g><path d="M20 20 80 80" stroke="#d0251b" stroke-width="9"/>`;
+    else if (t === 'advertencia') h += `<path d="M50 8 95 88H5Z" fill="#ffcd00" stroke="#111" stroke-width="6" stroke-linejoin="round"/><g transform="translate(50 64) scale(.6) translate(-50 -52)">${PICT[id]('#111')}</g>`;
+    else if (t === 'obligacion') h += `<circle cx="50" cy="50" r="46" fill="#1f5fbf"/><g transform="translate(50 50) scale(.8) translate(-50 -50)">${PICT[id]('#fff')}</g>`;
+    else h += `<rect x="4" y="4" width="92" height="92" rx="5" fill="${t === 'salvamento' ? '#138a4b' : '#d0251b'}"/><g transform="translate(50 50) scale(.86) translate(-50 -50)">${PICT[id]('#fff')}</g>`;
+    return h + '</svg>';
+  }
+  G.IPE_SIGN = signSvg; /* para la ficha */
+  G.IPE_SIGNS = SENALES;
+
+  GAMES.senales = {
+    title: 'Señales de seguridad',
+    icon: '🚸',
+    tag: 'Reconoce cada señal por su forma, su color y su dibujo',
+    mount(root, api) {
+      let deck;
+      let i;
+      let pts;
+      let max;
+      let step; /* 0: elegir tipo · 1: elegir significado · 2: resuelto */
+      let fb;
+      let opts;
+      function start() {
+        /* 12 rondas: la mitad «¿qué señal es?» y la otra mitad «¿qué señal pondrías?» */
+        deck = shuffle(SENALES).slice(0, 12).map((x, k) => ({ s: x, modo: k % 2 ? 'poner' : 'ver' }));
+        i = 0;
+        pts = 0;
+        max = deck.reduce((a, r) => a + (r.modo === 'ver' ? 2 : 1), 0);
+        prep();
+        draw();
+      }
+      function prep() {
+        step = 0;
+        fb = null;
+        const r = deck[i];
+        if (!r) return;
+        if (r.modo === 'ver') {
+          const same = SENALES.filter((x) => x.tipo === r.s.tipo && x.id !== r.s.id);
+          const other = SENALES.filter((x) => x.tipo !== r.s.tipo);
+          opts = shuffle([r.s].concat(shuffle(same).slice(0, 1), shuffle(other).slice(0, same.length ? 1 : 2)));
+        } else {
+          /* tres señales para elegir: una del mismo tipo y otra que se confunde fácil */
+          const same = SENALES.filter((x) => x.tipo === r.s.tipo && x.id !== r.s.id);
+          const other = SENALES.filter((x) => x.tipo !== r.s.tipo);
+          opts = shuffle([r.s].concat(shuffle(same).slice(0, 1), shuffle(other).slice(0, same.length ? 1 : 2)));
+        }
+      }
+      function draw() {
+        if (i >= deck.length) {
+          const sc = Math.round((pts / max) * 100);
+          api.done(sc, sc === 100 ? '¡Todas! Ya puedes revisar la señalización de cualquier CPD.' : `${pts} de ${max} puntos.`);
+          if (sc === 100) api.award('senales');
+          root.innerHTML = `<div class="finish${sc >= 60 ? '' : ' fail'}"><div class="big">${sc}%</div><div><b>${sc === 100 ? '¡Señalización perfecta!' : sc >= 60 ? 'Bien visto.' : 'Repasa la tabla de formas y colores.'}</b><p>${pts} de ${max} puntos.</p><button type="button" class="btn primary" data-new>Otra ronda</button> <button type="button" class="btn" data-go="f/us">Ver la ficha</button></div></div>`;
+          return;
+        }
+        const r = deck[i];
+        let h = `<div class="sg-hud"><span>Señal ${i + 1} de ${deck.length}</span><span>Puntos: <b>${pts}</b></span></div><div class="sg-bar"><i style="width:${(i / deck.length) * 100}%"></i></div>`;
+        if (r.modo === 'ver') {
+          h += `<div class="sg-card"><div class="sg-big" data-s="${r.s.id}">${signSvg(r.s.id, 170)}</div><div class="sg-q">`;
+          if (step === 0) {
+            h += '<p class="sg-ask">¿Qué <b>tipo</b> de señal es?</p><div class="sg-tipos">' + Object.entries(TIPOS).map(([k, t]) => `<button type="button" class="opt" data-tipo="${k}">${t.n}</button>`).join('') + '</div>';
+          } else {
+            h += `<p class="sg-tag">${TIPOS[r.s.tipo].n}</p><p class="sg-ask">¿Qué <b>significa</b>?</p><div class="opts">` +
+              opts.map((o) => `<button type="button" class="opt${step === 2 ? (o.id === r.s.id ? ' ok' : fb && fb.pick === o.id ? ' bad' : '') : ''}" data-sig="${o.id}"${step === 2 ? ' disabled' : ''}>${esc(o.n)}</button>`).join('') + '</div>';
+          }
+        } else {
+          h += `<div class="sg-card poner"><div class="sg-q"><p class="sg-tag">¿Qué señal pondrías?</p><p class="sg-sit">${esc(r.s.sit)}</p><div class="sg-pick">` +
+            opts.map((o) => `<button type="button" class="sg-opt${step === 2 ? (o.id === r.s.id ? ' ok' : fb && fb.pick === o.id ? ' bad' : '') : ''}" data-sig="${o.id}"${step === 2 ? ' disabled' : ''} aria-label="${esc(o.n)}">${signSvg(o.id, 96)}${step === 2 ? `<small>${esc(o.n)}</small>` : ''}</button>`).join('') + '</div>';
+        }
+        if (fb) h += `<p class="fb ${fb.ok ? 'ok' : 'bad'}">${fb.ok ? '✓' : '✗'} ${fb.t}</p>`;
+        if (step === 2) h += `<div class="row-btns"><button type="button" class="btn primary" data-next>${i + 1 < deck.length ? 'Siguiente señal →' : 'Ver resultado →'}</button></div>`;
+        h += '</div></div>';
+        root.innerHTML = h;
+        const nx = root.querySelector('[data-next]');
+        if (nx) nx.focus();
+      }
+      root.addEventListener('click', (e) => {
+        const r = deck && deck[i];
+        if (e.target.closest('[data-new]')) return start();
+        if (e.target.closest('[data-next]')) {
+          i++;
+          prep();
+          return draw();
+        }
+        const tb = e.target.closest('[data-tipo]');
+        if (tb && r && r.modo === 'ver' && step === 0) {
+          const ok = tb.dataset.tipo === r.s.tipo;
+          if (ok) pts++;
+          fb = { ok, t: ok ? `Es de ${TIPOS[r.s.tipo].n.toLowerCase()}: ${TIPOS[r.s.tipo].why}.` : `No: es de ${TIPOS[r.s.tipo].n.toLowerCase()} (${TIPOS[r.s.tipo].why}).` };
+          api.say(ok ? 'Bien: forma y color.' : 'Fíjate en la forma y el color.', ok ? 'happy' : 'oops');
+          step = 1;
+          return draw();
+        }
+        const sb = e.target.closest('[data-sig]');
+        if (sb && r && step !== 2 && (r.modo === 'poner' || step === 1)) {
+          const ok = sb.dataset.sig === r.s.id;
+          if (ok) pts++;
+          const tip = TIPOS[r.s.tipo];
+          fb = { ok, pick: sb.dataset.sig, t: r.modo === 'ver' ? (ok ? `«${esc(r.s.n)}». ${esc(r.s.sit)}` : `Es «${esc(r.s.n)}». ${esc(r.s.sit)}`) : (ok ? `«${esc(r.s.n)}»: ${tip.n.toLowerCase()}, ${tip.why}.` : `La correcta es «${esc(r.s.n)}» (${tip.n.toLowerCase()}: ${tip.why}).`) };
+          api.say(ok ? '¡Esa es!' : 'Casi. Mira la explicación.', ok ? 'happy' : 'oops');
+          step = 2;
+          return draw();
+        }
+      });
+      start();
+      api.say('Forma + color = tipo de señal. El dibujo te dice el resto.', '');
     },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

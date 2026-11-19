@@ -25,7 +25,7 @@
 
   /* rangos: tu trayectoria laboral, del paro a montar tu propia empresa; cada uno con su base legal */
   /* rangos: tu trayectoria laboral, del paro a montar tu propia empresa; cada uno con su base legal.
-     XP máximo: 9 minitest × 40 + 11 juegos × 70 + 16 logros × 25 (+ 100 del logro oculto) = 1630.
+     XP máximo: 10 minitest × 40 + 12 juegos × 70 + 17 logros × 25 (+ 100 del logro oculto) = 1765.
      Umbrales afinados simulando una partida «buena» (2/3 en los minitest, 80 % en los juegos): cada rango
      llega al terminar su unidad y el último al acabarlo todo. La perfección se premia con el logro oculto. */
   const RANKS = [
@@ -33,22 +33,23 @@
     [130, 'Alumno en prácticas', '🏫', 'FP en empresa', 'Tu primera empresa: aprendes con un tutor y sin firmar contrato de trabajo.', 'Al terminar la unidad 1: ya sabes qué perfil IT buscas'],
     [240, 'Técnico en periodo de prueba', '⏳', 'Art. 14 ET', 'Ya tienes contrato, pero cualquiera de las partes puede terminarlo sin indemnización mientras dura la prueba.', 'Al terminar la unidad 2: sabes detectar los peligros'],
     [350, 'Técnico con contrato indefinido', '✍️', 'Art. 15 ET', 'Superada la prueba: el indefinido es la regla general desde la reforma de 2021.', 'Al terminar la unidad 3: sabes evaluar los riesgos'],
-    [490, 'Delegado de prevención', '🦺', 'Art. 35 LPRL', 'Tus compañeros te eligen para vigilar la seguridad y la salud en el trabajo.', 'Al cerrar el bloque de prevención (unidades 2 a 4)'],
-    [740, 'Miembro del comité de empresa', '🗳️', 'Art. 63 ET', 'Representas a la plantilla y negocias con la empresa, convenio incluido.', 'Al dominar contratos y jornada (unidades 5 y 6)'],
-    [1000, 'Responsable del equipo IT', '🧑‍💼', 'Poder de dirección', 'Organizas guardias legales, evalúas los riesgos de tu equipo y revisas nóminas.', 'Al dominar nómina, despido y finiquito (unidades 7 y 8)'],
-    [1220, 'Fundador de tu empresa IT', '🚀', 'Autoempleo', 'Ahora quien contrata, da de alta en la Seguridad Social y paga las nóminas eres tú.', 'Al completarlo todo: tu proyecto profesional y el escape room final'],
+    [600, 'Delegado de prevención', '🦺', 'Art. 35 LPRL', 'Tus compañeros te eligen para vigilar la seguridad y la salud en el trabajo.', 'Al cerrar el bloque de prevención (unidades 2 a 5)'],
+    [860, 'Miembro del comité de empresa', '🗳️', 'Art. 63 ET', 'Representas a la plantilla y negocias con la empresa, convenio incluido.', 'Al dominar contratos y jornada (unidades 6 y 7)'],
+    [1100, 'Responsable del equipo IT', '🧑‍💼', 'Poder de dirección', 'Organizas guardias legales, evalúas los riesgos de tu equipo y revisas nóminas.', 'Al dominar nómina, despido y finiquito (unidades 8 y 9)'],
+    [1340, 'Fundador de tu empresa IT', '🚀', 'Autoempleo', 'Ahora quien contrata, da de alta en la Seguridad Social y paga las nóminas eres tú.', 'Al completarlo todo: tu proyecto profesional y el escape room final'],
   ];
-  const XP_MAX = 1630;
+  const XP_MAX = 1765;
   /* logros con forma de acreditaciones del mundo laboral: cada uno lleva el documento o la figura real que imita */
   const BADGES = [
     { id: 'ficha', icon: '🪪', name: 'Alta en la Seguridad Social', ref: 'Primer día', how: 'Completa el minitest de una ficha.' },
-    { id: 'fichas', icon: '🎓', name: 'Título de Técnico Superior', ref: 'ASIR', how: 'Completa los minitest de las nueve unidades.' },
+    { id: 'fichas', icon: '🎓', name: 'Título de Técnico Superior', ref: 'ASIR', how: 'Completa los minitest de las diez unidades.' },
     { id: 'pleno', icon: '🏅', name: 'Matrícula de honor', ref: 'Expediente', how: 'Saca 3/3 en todos los minitest.' },
     { id: 'brujula', icon: '🧭', name: 'Currículum con rumbo', ref: 'Europass', how: 'Descubre tu perfil en la Brújula profesional.' },
     { id: 'inspector', icon: '🦺', name: 'Recurso preventivo', ref: 'Art. 32 bis LPRL', how: 'Encuentra todos los peligros de una escena sin fallar la clasificación.' },
     { id: 'matriz', icon: '📋', name: 'Evaluación firmada', ref: 'Método INSST', how: 'Coloca bien todos los riesgos en la matriz.' },
+    { id: 'senales', icon: '🚸', name: 'Señalización revisada', ref: 'RD 485/1997', how: 'Acierta todas las señales de una ronda.' },
     { id: 'pas', icon: '⛑️', name: 'Equipo de primera intervención', ref: 'Plan de emergencia', how: 'Resuelve una emergencia sin ningún error.' },
-    { id: 'prl', icon: '🏗️', name: 'Prevención de nivel básico', ref: 'RD 39/1997', how: 'Termina los juegos de prevención: Inspector, Matriz y Emergencia.' },
+    { id: 'prl', icon: '🏗️', name: 'Prevención de nivel básico', ref: 'RD 39/1997', how: 'Termina los juegos de prevención: Inspector, Matriz, Señales y Emergencia.' },
     { id: 'contrato', icon: '✍️', name: 'Firma con lupa', ref: 'Art. 15 ET', how: 'Acierta todos los contratos de una partida, trampa incluida.' },
     { id: 'cuadrante', icon: '⏰', name: 'Registro horario impecable', ref: 'Art. 34 ET', how: 'Supera los cuatro niveles del cuadrante.' },
     { id: 'legal', icon: '⚖️', name: 'Inspección de Trabajo', ref: 'ITSS', how: 'Encadena 10 aciertos en ¿Legal o ilegal?' },
@@ -168,7 +169,7 @@
       addXp(Math.round(score / 2) - (prev ? Math.round(prev / 2) : 0) + (prev == null ? 20 : 0));
     }
     if (score >= 100) confetti(90);
-    if (['inspector', 'matriz', 'emergencia'].every((g) => done.games[g] != null)) award('prl');
+    if (['inspector', 'matriz', 'senales', 'emergencia'].every((g) => done.games[g] != null)) award('prl');
     if (['contrato', 'cuadrante', 'legal', 'nomina', 'fin'].every((g) => done.games[g] != null)) award('laboral');
     checkSecret();
     renderSidebar();
@@ -327,6 +328,16 @@
       }
       h += '</div></article>';
       el.panel.innerHTML = h;
+      el.panel.querySelectorAll('[data-signs]').forEach((d) => {
+        if (!window.IPE_SIGN) return;
+        d.innerHTML = d.dataset.signs
+          .split(' ')
+          .map((id) => {
+            const sg = (window.IPE_SIGNS || []).find((x) => x.id === id);
+            return `<figure>${window.IPE_SIGN(id, 76)}<figcaption>${sg ? esc(sg.n) : ''}</figcaption></figure>`;
+          })
+          .join('');
+      });
     }
     function finishQuiz() {
       if (prev == null || right > prev) {

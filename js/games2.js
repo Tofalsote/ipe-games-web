@@ -803,6 +803,8 @@
     { t: 'Caja del extintor', story: 'Son las 21:00, el CPD se ha cerrado contigo dentro y huele a quemado: el SAI echa humo. La caja del extintor tiene un candado de letras con el agente extintor adecuado para equipos con tensión.', q: 'Escribe el agente extintor (3 caracteres).', a: (v) => /^co(2|₂)$/i.test(v.replace(/\s/g, '')), hint: 'No es agua ni espuma: es un gas que no conduce la electricidad.', sol: 'CO2' },
     { t: 'Armario del cuadro eléctrico', story: 'Fuego apagado. Para entrar al cuadro y cortar la tensión del SAI, el armario pide un número: las horas mínimas de descanso entre el final de una jornada y el inicio de la siguiente.', q: 'Código de 2 cifras.', a: (v) => v.trim() === '12', hint: 'Si sales a las 23:00, no puedes entrar antes de las 11:00.', sol: '12' },
     { t: 'Teléfono del puesto de guardia', story: 'Hay un compañero mareado por el humo. El teléfono interno solo deja marcar un número de 3 cifras: el de emergencias.', q: 'Número de emergencias.', a: (v) => v.trim() === '112', hint: 'Es el número único europeo.', sol: '112' },
+    { t: 'Tu compañero, en el suelo', story: 'El compañero del humo se ha desplomado: no responde y no respira con normalidad. El 112 te pide que empieces la RCP mientras llegan: ¿cuántas compresiones haces antes de cada 2 ventilaciones?', q: 'Número de compresiones.', a: (v) => v.trim() === '30', hint: 'El ritmo es 30:2, a unas 100-120 compresiones por minuto.', sol: '30' },
+    { t: 'La señal de salida', story: 'Sin corriente, la señal de SALIDA se ha apagado y con el humo no se ve. Su batería de emergencia se activa con el color de las señales de salvamento o socorro.', q: 'Escribe el color.', a: (v) => /^verde$/i.test(v.trim()), hint: 'Es el color de las salidas de emergencia y de los primeros auxilios.', sol: 'Verde' },
     { t: 'Caja fuerte del plan de emergencia', story: 'La caja con la llave de la salida de emergencia se abre con: días naturales mínimos de vacaciones + días de permiso por matrimonio.', q: 'Suma de las dos cifras.', a: (v) => v.trim() === '45', hint: 'Vacaciones: 30 días naturales. Matrimonio: 15 días naturales.', sol: '45' },
     { t: 'Panel de la puerta', story: 'La puerta pregunta por el nivel de un riesgo con probabilidad alta y consecuencias extremadamente dañinas, el que obliga a parar el trabajo de inmediato.', q: 'Escribe el nivel de riesgo.', a: (v) => /^intolerable$/i.test(v.trim()), hint: 'Es el peor nivel de la matriz del INSST.', sol: 'Intolerable' },
     { t: 'La salida', story: 'Último candado: tres letras con el orden de actuación ante un accidente. Fuera te espera el punto de encuentro.', q: 'Las tres iniciales, en orden.', a: (v) => /^p\.?\s*a\.?\s*s\.?$/i.test(v.trim()), hint: 'Proteger, Avisar, Socorrer.', sol: 'PAS' },
@@ -830,12 +832,14 @@
     { px: 222, tx: 212, ty: 196, tr: 40 }, /* extintor */
     { px: 618, tx: 632, ty: 156, tr: 48 }, /* cuadro eléctrico */
     { px: 700, tx: 726, ty: 238, tr: 30 }, /* teléfono */
+    { px: 560, tx: 618, ty: 334, tr: 44 }, /* compañero en el suelo */
+    { px: 118, tx: 92, ty: 105, tr: 34 }, /* señal de salida */
     { px: 735, tx: 738, ty: 158, tr: 36 }, /* caja fuerte */
     { px: 172, tx: 166, ty: 214, tr: 24 }, /* panel de la puerta */
     { px: 92, tx: 92, ty: 210, tr: 62 }, /* la puerta */
   ];
   function escScene() {
-    let s = '<svg class="esc-svg" viewBox="0 0 800 400" role="img" aria-label="El CPD: racks, el SAI ardiendo, la puerta con seis candados">';
+    let s = '<svg class="esc-svg" viewBox="0 0 800 400" role="img" aria-label="El CPD: racks, el SAI ardiendo, la puerta con ocho candados">';
     s += '<defs><linearGradient id="escSmoke" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b3640" stop-opacity=".95"/><stop offset="1" stop-color="#5b5560" stop-opacity="0"/></linearGradient>' +
       '<radialGradient id="escBeam" cx="0" cy="0.5" r="1"><stop offset="0" stop-color="#ff2b1a" stop-opacity=".55"/><stop offset="1" stop-color="#ff2b1a" stop-opacity="0"/></radialGradient>' +
       '<radialGradient id="escGlow"><stop offset="0" stop-color="#ffb02e" stop-opacity=".55"/><stop offset="1" stop-color="#ffb02e" stop-opacity="0"/></radialGradient>' +
@@ -846,11 +850,11 @@
     s += '<path d="M0 330H800M0 362H800" class="e-tile"/><rect y="296" width="800" height="6" class="e-skirt"/>';
     /* ventana con la calle (sirenas al llamar al 112) */
     s += '<g class="e-window"><rect x="690" y="34" width="92" height="62" class="e-win"/><rect x="690" y="34" width="92" height="62" class="e-siren"/><path d="M736 34v62M690 65h92" class="e-frame"/></g>';
-    /* puerta de salida con seis candados */
-    s += '<rect x="44" y="96" width="96" height="18" rx="2" class="e-exit"/><text x="92" y="109" class="e-exit-t">SALIDA</text>';
+    /* puerta de salida con ocho candados */
+    s += '<rect x="44" y="96" width="96" height="18" rx="2" class="e-exit"/><rect x="40" y="92" width="104" height="26" rx="4" class="e-exitglow"/><text x="92" y="109" class="e-exit-t">SALIDA</text>';
     s += '<rect x="34" y="118" width="116" height="182" class="e-doorframe"/><rect x="40" y="124" width="104" height="176" class="e-doorway"/><rect x="40" y="124" width="104" height="176" class="e-exitlight"/>';
     s += '<g class="e-door"><rect x="40" y="124" width="104" height="176" class="e-doorleaf"/><rect x="52" y="138" width="80" height="60" class="e-doorpanel"/><rect x="118" y="214" width="18" height="6" rx="3" class="e-handle"/>';
-    for (let i = 0; i < 6; i++) s += `<g class="e-pad" data-pad="${i}" transform="translate(${62 + (i % 3) * 24} ${232 + Math.floor(i / 3) * 30})"><path d="M-6 0v-6a6 6 0 0 1 12 0v6" class="e-shackle"/><rect x="-8" y="0" width="16" height="13" rx="2" class="e-padbody"/></g>`;
+    for (let i = 0; i < 8; i++) s += `<g class="e-pad" data-pad="${i}" transform="translate(${56 + (i % 4) * 24} ${232 + Math.floor(i / 4) * 30})"><path d="M-6 0v-6a6 6 0 0 1 12 0v6" class="e-shackle"/><rect x="-8" y="0" width="16" height="13" rx="2" class="e-padbody"/></g>`;
     s += '</g>';
     /* teclado de la puerta */
     s += '<g class="e-keypad"><rect x="156" y="196" width="22" height="36" rx="2" class="e-kp"/>';
@@ -886,6 +890,8 @@
     s += '<g class="e-panel"><rect x="602" y="112" width="60" height="88" class="e-pbox"/><path d="M632 124l-7 14h7l-6 14 12-18h-7l5-10Z" class="e-bolt"/><rect x="624" y="160" width="16" height="30" class="e-slot"/><rect x="626" y="162" width="12" height="12" class="e-lever"/></g>';
     /* caja fuerte del plan de emergencia */
     s += '<g class="e-safe"><rect x="708" y="128" width="62" height="58" class="e-safebox"/><rect x="714" y="134" width="50" height="46" class="e-safein"/><text x="739" y="164" class="e-key-g">🗝</text><g class="e-safedoor"><rect x="714" y="134" width="50" height="46" class="e-safefront"/><circle cx="739" cy="157" r="9" class="e-dial"/><path d="M739 150v7" class="e-dialmark"/></g></g>';
+    /* el compañero que se ha desmayado */
+    s += '<g class="e-mate"><g class="e-mate-down"><circle cx="652" cy="338" r="8" class="e-head"/><path d="M644 338H596M628 338l-10 -10M628 338l-10 10M600 338l-14-6M600 338l-14 6" class="e-body"/></g><g class="e-mate-up"><circle cx="640" cy="300" r="8" class="e-head"/><path d="M640 308v20l-22 6M640 318l-12 10M640 328l18 6" class="e-body"/><text x="660" y="292" class="e-ok">¡Uf!</text></g></g>';
     /* mesa y teléfono */
     s += '<rect x="676" y="248" width="112" height="8" class="e-desk"/><path d="M684 256v44M780 256v44" class="e-deskleg"/><g class="e-phone"><rect x="712" y="234" width="30" height="14" rx="3" class="e-tel"/><path d="M710 234q17-12 34 0" class="e-handset"/></g>';
     s += '<g class="e-call"><rect x="690" y="196" width="70" height="26" rx="4" class="e-bubble"/><path d="M712 222l6 8 4-8Z" class="e-bubble"/><text x="725" y="214" class="e-call-t">112 ☎</text></g>';
@@ -954,9 +960,11 @@
         svg.classList.toggle('fire-out', k >= 1);
         svg.classList.toggle('no-power', k >= 2);
         svg.classList.toggle('called', k >= 3);
-        svg.classList.toggle('safe-open', k >= 4);
-        svg.classList.toggle('door-ok', k >= 5);
-        svg.classList.toggle('door-open', k >= 6);
+        svg.classList.toggle('mate-ok', k >= 4);
+        svg.classList.toggle('sign-on', k >= 5);
+        svg.classList.toggle('safe-open', k >= 6);
+        svg.classList.toggle('door-ok', k >= 7);
+        svg.classList.toggle('door-open', k >= 8);
         svg.classList.toggle('lost', state === 'lose');
         svg.querySelectorAll('.e-pad').forEach((p, i) => p.classList.toggle('open', i < k));
         root.querySelectorAll('#escLocks i').forEach((x, i) => {
@@ -965,14 +973,14 @@
         });
         const spot = ESC_SPOT[Math.min(k, ESC_SPOT.length - 1)];
         const me = svg.querySelector('.e-me');
-        const px = state === 'intro' ? 420 : k >= 6 ? 70 : spot.px;
+        const px = state === 'intro' ? 420 : k >= CANDADOS.length ? 70 : spot.px;
         me.style.transform = `translate(${px}px, 330px)`;
-        me.classList.toggle('gone', k >= 6);
+        me.classList.toggle('gone', k >= CANDADOS.length);
         const tg = svg.querySelector('.e-target');
         tg.setAttribute('cx', spot.tx);
         tg.setAttribute('cy', spot.ty);
         tg.setAttribute('r', spot.tr);
-        tg.classList.toggle('on', state === 'play' && k < 6);
+        tg.classList.toggle('on', state === 'play' && k < CANDADOS.length);
         tick();
       }
       function tick() {
@@ -1032,7 +1040,7 @@
         clearInterval(timer);
         const left = remaining();
         sync();
-        const score = Math.min(100, Math.round(40 + (100 * left) / ESC_TOTAL));
+        const score = Math.min(100, Math.round(40 + left)); /* 100 % con 1:00 o más de margen */
         const b = best();
         if (b == null || left > b) api.store.set('best', Math.round(left));
         api.award('escape');
@@ -1040,7 +1048,7 @@
         setTimeout(() => {
           if (state === 'win') svg.querySelector('#escBig').textContent = '¡FUERA!';
         }, 1400);
-        panel.innerHTML = `<div class="finish"><div class="big">🔓</div><div><b>¡Has escapado con ${fmt(left)} de margen!</b><p>Fallos: ${errs} · pistas: ${hints} · nota: ${score} %${b != null ? ` · tu mejor margen: ${fmt(Math.max(b, left))}` : ''}</p><p class="small">La nota depende del tiempo que te sobra: con 1:30 o más, 100 %.</p><button type="button" class="btn primary" data-start>Volver a jugar</button></div></div>`;
+        panel.innerHTML = `<div class="finish"><div class="big">🔓</div><div><b>¡Has escapado con ${fmt(left)} de margen!</b><p>Fallos: ${errs} · pistas: ${hints} · nota: ${score} %${b != null ? ` · tu mejor margen: ${fmt(Math.max(b, left))}` : ''}</p><p class="small">La nota depende del tiempo que te sobra: con 1:00 o más, 100 %.</p><button type="button" class="btn primary" data-start>Volver a jugar</button></div></div>`;
         fit();
       }
       function drawPanel() {
@@ -1064,7 +1072,7 @@
           if (k >= CANDADOS.length) return win();
           sync();
           drawPanel();
-          api.say(['¡SAI apagado con CO₂! Pero el fuego sigue por los cables: corta la corriente, rápido.', '¡Corriente cortada! Solo queda la luz de emergencia.', '¡Ayuda en camino! Se oyen las sirenas.', '¡La llave de la salida! Ahora el panel de la puerta.', '¡Panel en verde! Último candado.'][k - 1], 'happy');
+          api.say(['¡SAI apagado con CO₂! Pero el fuego sigue por los cables: corta la corriente, rápido.', '¡Corriente cortada! Solo queda la luz de emergencia.', '¡Ayuda en camino! Pero tu compañero se ha desplomado…', '¡Respira! Tu compañero vuelve en sí.', '¡La señal de salida se enciende! Ya ves la puerta.', '¡La llave de la salida! Ahora el panel de la puerta.', '¡Panel en verde! Último candado.'][k - 1], 'happy');
         } else {
           errs++;
           penalty(ESC_FALLO, 'Fallo');
@@ -1094,7 +1102,7 @@
         window.removeEventListener('resize', fit);
       });
       sync();
-      panel.innerHTML = `<div class="esc-intro"><p class="lead">Viernes, 21:00. Has ido al CPD a revisar una alarma y la puerta se ha cerrado detrás de ti. El SAI empieza a arder. Tienes <b>2:30</b> antes de que el humo y las llamas llenen la sala: abre los seis candados con lo que has aprendido.</p><p class="small">Cada fallo resta ${ESC_FALLO} s y cada pista ${ESC_PISTA} s.${best() != null ? ` Tu mejor margen: ${fmt(best())}.` : ''}</p><button type="button" class="btn primary big" data-start>▶ Empezar la cuenta atrás</button></div>`;
+      panel.innerHTML = `<div class="esc-intro"><p class="lead">Viernes, 21:00. Has ido al CPD a revisar una alarma y la puerta se ha cerrado detrás de ti. El SAI empieza a arder. Tienes <b>2:30</b> antes de que el humo y las llamas llenen la sala: abre los ocho candados con lo que has aprendido.</p><p class="small">Cada fallo resta ${ESC_FALLO} s y cada pista ${ESC_PISTA} s.${best() != null ? ` Tu mejor margen: ${fmt(best())}.` : ''}</p><button type="button" class="btn primary big" data-start>▶ Empezar la cuenta atrás</button></div>`;
       requestAnimationFrame(fit);
       setTimeout(fit, 300);
       api.say('El examen final, en forma de escape room. ¿Te atreves?', '');
